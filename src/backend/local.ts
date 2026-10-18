@@ -1,19 +1,51 @@
 import type { Backend } from './types';
 
 /**
- * 本機示範模式：用 localStorage 模擬資料庫，同一個瀏覽器的不同分頁之間會即時同步。
+ * 本機示範模式：用 IndexedDB 模擬資料庫，同一個瀏覽器的不同分頁之間會即時同步。
  * 還沒設定 Firebase 時可以先用它試玩與開發。
+ *
+ * 用 IndexedDB 而不是 localStorage，是因為 localStorage 在分頁之間是非同步同步的，
+ * 兩個分頁同時寫入時會互相蓋掉；IndexedDB 的讀寫交易在分頁之間是原子性的。
  */
-const STORAGE_KEY = 'gameoftwo-local-db';
+const DB_NAME = 'gameoftwo-local';
+const STORE = 'kv';
+const TREE_KEY = 'tree';
 
 type Tree = Record<string, unknown>;
 
-function load(): Tree {
-  try {
-    return (JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}') as Tree) ?? {};
-  } catch {
-    return {};
-  }
+function openDb(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore(STORE);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function readTree(db: IDBDatabase): Promise<Tree> {
+  return new Promise((resolve, reject) => {
+    const req = db.transaction(STORE).objectStore(STORE).get(TREE_KEY);
+    req.onsuccess = () => resolve((req.result as Tree | undefined) ?? {});
+    req.onerror = () => reject(req.error);
+  });
+}
+
+/** 在單一個 IndexedDB 交易裡讀取、修改、寫回。fn 回傳 undefined 代表不寫入。 */
+function updateTree(db: IDBDatabase, fn: (tree: Tree) => Tree | undefined): Promise<{ tree: Tree; written: boolean }> {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    const store = tx.objectStore(STORE);
+    let result = { tree: {} as Tree, written: false };
+    const req = store.get(TREE_KEY);
+    req.onsuccess = () => {
+      const current = (req.result as Tree | undefined) ?? {};
+      const next = fn(current);
+      result = next === undefined ? { tree: current, written: false } : { tree: next, written: true };
+      if (next !== undefined) store.put(next, TREE_KEY);
+    };
+    tx.oncomplete = () => resolve(result);
+    tx.onerror = () => reject(tx.error);
+  });
 }
 
 function splitPath(path: string): string[] {
@@ -55,12 +87,20 @@ function setAt(tree: Tree, path: string, value: unknown): Tree {
   return (normalize(root) as Tree) ?? {};
 }
 
-export function createLocalBackend(): Backend {
+export async function createLocalBackend(): Promise<Backend> {
+  const db = await openDb();
+  const channel = new BroadcastChannel(DB_NAME);
   const listeners = new Set<{ path: string; cb: (v: unknown) => void; last: string }>();
   const disconnectWrites = new Map<string, unknown>();
+  let readSeq = 0;
+  let deliveredSeq = 0;
 
-  function notify() {
-    const tree = load();
+  async function notify() {
+    const seq = ++readSeq;
+    const tree = await readTree(db);
+    // 讀取是非同步的，比較舊的結果晚到時直接丟掉
+    if (seq < deliveredSeq) return;
+    deliveredSeq = seq;
     for (const l of listeners) {
       const value = getAt(tree, l.path);
       const json = JSON.stringify(value);
@@ -71,42 +111,45 @@ export function createLocalBackend(): Backend {
     }
   }
 
-  function write(path: string, value: unknown) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(setAt(load(), path, value)));
-    // 其他分頁會收到 storage 事件；自己這個分頁要手動通知
-    queueMicrotask(notify);
+  async function update(fn: (tree: Tree) => Tree | undefined) {
+    const result = await updateTree(db, fn);
+    if (result.written) {
+      channel.postMessage('changed');
+      void notify();
+    }
+    return result;
   }
 
-  window.addEventListener('storage', (e) => {
-    if (e.key === STORAGE_KEY) notify();
-  });
+  const write = (path: string, value: unknown) => update((tree) => setAt(tree, path, value)).then(() => {});
+
+  channel.onmessage = () => void notify();
   window.addEventListener('pagehide', () => {
-    for (const [path, value] of disconnectWrites) write(path, value);
+    for (const [path, value] of disconnectWrites) void write(path, value);
   });
 
   return {
     kind: 'local',
     async get<T>(path: string) {
-      return structuredClone(getAt(load(), path)) as T | null;
+      return getAt(await readTree(db), path) as T | null;
     },
-    async set(path, value) {
-      write(path, value);
-    },
-    async remove(path) {
-      write(path, null);
-    },
+    set: write,
+    remove: (path) => write(path, null),
     async transaction<T>(path: string, fn: (current: T | null) => T | null | undefined) {
-      const current = structuredClone(getAt(load(), path)) as T | null;
-      const next = fn(current);
-      if (next === undefined) return { committed: false, value: current };
-      write(path, next);
-      return { committed: true, value: structuredClone(getAt(load(), path)) as T | null };
+      const { tree, written } = await update((t) => {
+        const next = fn(structuredClone(getAt(t, path)) as T | null);
+        return next === undefined ? undefined : setAt(t, path, next);
+      });
+      return { committed: written, value: structuredClone(getAt(tree, path)) as T | null };
     },
     subscribe<T>(path: string, cb: (value: T | null) => void) {
-      const value = getAt(load(), path);
-      const listener = { path, cb: cb as (v: unknown) => void, last: JSON.stringify(value) };
+      const listener = { path, cb: cb as (v: unknown) => void, last: '' };
       listeners.add(listener);
-      queueMicrotask(() => cb(structuredClone(value) as T | null));
+      void readTree(db).then((tree) => {
+        if (!listeners.has(listener) || listener.last !== '') return;
+        const value = getAt(tree, path);
+        listener.last = JSON.stringify(value);
+        cb(structuredClone(value) as T | null);
+      });
       return () => listeners.delete(listener);
     },
     async onDisconnectSet(path, value) {
