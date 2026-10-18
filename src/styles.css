@@ -193,6 +193,8 @@ button:focus-visible, .button:focus-visible, a:focus-visible { outline: 3px soli
 
 .field { display: flex; flex-direction: column; gap: 8px; font-weight: 650; }
 .code-input { text-transform: uppercase; letter-spacing: 0.3em; font-weight: 750; text-align: center; }
+/* 字距只給輸入的數字/房號用，提示文字維持正常字距 */
+.code-input::placeholder { letter-spacing: normal; font-weight: 500; }
 
 .badge, .tag { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: 0.78rem; font-weight: 650; }
 .badge { background: var(--accent-soft); color: var(--accent); }
@@ -539,7 +541,9 @@ button.danger { background: var(--danger); color: #fff; border-color: transparen
 .t6-row-label { display: flex; flex-direction: column; justify-content: center; font-size: 0.85rem; font-weight: 600; }
 .t6-card {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-  min-height: 56px; padding: 4px 2px; border-radius: 8px; border: 2px solid var(--border); background: var(--surface);
+  min-height: 56px; padding: 4px 2px; border-radius: 8px; border: 2px solid rgba(30, 20, 80, 0.14);
+  /* 牌像實體紙牌一樣固定是淺色底；數字是深色，深色模式下也看得清楚 */
+  background: #fffdf8; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 .t6-card.heads-2 { background: #e8f1ff; }
 .t6-card.heads-3 { background: #fff4d6; }
