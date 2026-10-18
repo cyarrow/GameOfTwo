@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getGame } from '../games/registry';
+import { ErrorBoundary } from './ErrorBoundary';
 import { backToLobby, sendMove, startMatch } from '../platform/room';
 import { errorMessage } from '../platform/roomState';
 import type { MatchData, Room } from '../platform/types';
@@ -59,8 +60,11 @@ export function GameStage({ room, match, me }: { room: Room; match: MatchData; m
 
       {!isPlayer && <p className="notice">你在這局開始後才加入，目前是觀戰中，下一局就能一起玩。</p>}
 
-      <View
+      <ErrorBoundary
         key={match.id}
+        fallback={<p className="error">遊戲畫面出錯了，可能是網站版本不同。請重新整理，或請房主中止這局。</p>}
+      >
+      <View
         state={match.state}
         playerIds={match.playerIds}
         me={isPlayer ? me : null}
@@ -68,6 +72,7 @@ export function GameStage({ room, match, me }: { room: Room; match: MatchData; m
         sendMove={(move) => sendMove(room.code, me, move)}
         finished={finished}
       />
+      </ErrorBoundary>
 
       {match.result && (
         <div className="result" role="status">

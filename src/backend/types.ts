@@ -22,7 +22,8 @@ export interface Backend {
     path: string,
     fn: (current: T | null) => T | null | undefined,
   ): Promise<TransactionResult<T>>;
-  subscribe<T>(path: string, cb: (value: T | null) => void): Unsubscribe;
+  /** onError：例如資料庫規則不允許讀取時 */
+  subscribe<T>(path: string, cb: (value: T | null) => void, onError?: (error: Error) => void): Unsubscribe;
   /** 斷線（關閉分頁、網路中斷）時由伺服器寫入 value。 */
   onDisconnectSet(path: string, value: unknown): Promise<void>;
   cancelOnDisconnect(path: string): Promise<void>;

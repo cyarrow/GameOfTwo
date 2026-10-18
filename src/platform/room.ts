@@ -1,4 +1,5 @@
 import { getBackend } from '../backend';
+import { fetchCustomContent } from '../banks';
 import * as rs from './roomState';
 import type { RoomRecord } from './types';
 
@@ -79,8 +80,9 @@ export async function leaveRoom(code: string, playerId: string): Promise<void> {
   await mutate(code, (r) => rs.leave(r, playerId)).catch(() => {});
 }
 
-export function startMatch(code: string, playerId: string, gameId: string): Promise<void> {
-  return mutate(code, (r) => rs.startMatch(r, playerId, gameId, Math.random, Date.now()));
+export async function startMatch(code: string, playerId: string, gameId: string): Promise<void> {
+  const custom = await fetchCustomContent();
+  return mutate(code, (r) => rs.startMatch(r, playerId, gameId, Math.random, Date.now(), custom));
 }
 
 /** 送出遊戲動作；成功回傳 null，失敗回傳錯誤訊息。 */

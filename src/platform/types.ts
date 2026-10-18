@@ -32,6 +32,8 @@ export interface MatchData {
   startedAt: number;
   /** 懲罰模式開啟時，對局結束會抽一張懲罰卡 */
   punishment?: Punishment | null;
+  /** 開局時先抽好的懲罰內容（因為對局結束時不會再讀自訂題庫） */
+  punishmentText?: string;
 }
 
 export interface Punishment {

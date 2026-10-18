@@ -1,3 +1,4 @@
+import { EMPTY_CONTENT, pickOne, type CustomContent } from '../banks';
 import { getGame } from '../games/registry';
 import { GameError } from '../games/types';
 import { PUNISHMENTS } from './punishments';
@@ -108,6 +109,7 @@ export function startMatch(
   gameId: string,
   random: () => number,
   now: number,
+  custom: CustomContent = EMPTY_CONTENT,
 ): RoomRecord {
   if (hostOf(record) !== requesterId) throw new RoomError('只有房主可以開始遊戲');
   if (isActiveMatch(decodeMatch(record))) throw new RoomError('目前還有一局正在進行');
@@ -125,9 +127,10 @@ export function startMatch(
     id: Math.floor(random() * 1e9).toString(36),
     gameId,
     playerIds,
-    state: game.setup(playerIds, random),
+    state: game.setup(playerIds, random, custom),
     result: null,
     startedAt: now,
+    punishmentText: pickOne(custom.punishments, PUNISHMENTS, random),
   };
   return { ...record, match: JSON.stringify(match) };
 }
@@ -136,7 +139,7 @@ export function startMatch(
 function drawPunishment(match: MatchData, points: Record<string, number>, random: () => number): Punishment | null {
   const losers = match.playerIds.filter((id) => !((points[id] ?? 0) > 0));
   if (losers.length === 0 || losers.length === match.playerIds.length) return null;
-  return { losers, text: PUNISHMENTS[Math.floor(random() * PUNISHMENTS.length)] };
+  return { losers, text: match.punishmentText ?? PUNISHMENTS[Math.floor(random() * PUNISHMENTS.length)] };
 }
 
 export function applyMove(

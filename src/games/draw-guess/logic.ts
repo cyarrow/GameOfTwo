@@ -1,3 +1,4 @@
+import { EMPTY_CONTENT, pickMixed, type CustomContent } from '../../banks';
 import { GameError, type GameResult } from '../types';
 import { joinNames, pointsForTop } from '../helpers';
 import { shuffle } from '../shuffle';
@@ -44,14 +45,14 @@ export type DrawGuessMove =
   | { type: 'skip'; round: number }
   | { type: 'next'; round: number };
 
-export function setup(playerIds: string[], random: () => number): DrawGuessState {
+export function setup(playerIds: string[], random: () => number, custom: CustomContent = EMPTY_CONTENT): DrawGuessState {
   // 2 人時每人畫兩題，其他人數每人畫一題
   const order = shuffle(playerIds, random);
   const drawers = playerIds.length === 2 ? [...order, ...order] : order;
   return {
     players: playerIds,
     drawers,
-    words: shuffle(WORDS, random).slice(0, drawers.length),
+    words: pickMixed(custom.drawGuess, WORDS, drawers.length, random),
     round: 0,
     strokes: [],
     guesses: [],

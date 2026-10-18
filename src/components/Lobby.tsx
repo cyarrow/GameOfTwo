@@ -59,6 +59,9 @@ export function Lobby({ room, me }: { room: Room; me: string }) {
           <small className="muted">每局結束時抽一張懲罰卡給輸的人{isHost ? '' : '（由房主切換）'}</small>
         </span>
       </label>
+      <a className="button" href="#/banks" target="_blank" rel="noopener">
+        ✏️ 自訂題庫（另開分頁）
+      </a>
       {error && <p className="error">{error}</p>}
 
       <div className="game-grid">

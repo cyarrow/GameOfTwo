@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { backendKind } from './backend';
+import { BanksPage } from './pages/BanksPage';
 import { HomePage } from './pages/HomePage';
 import { RoomPage } from './pages/RoomPage';
 
@@ -25,7 +26,9 @@ export function App() {
           🎲 GameOfTwo
         </a>
       </header>
-      <main className="content">{roomCode ? <RoomPage key={roomCode} code={roomCode} /> : <HomePage />}</main>
+      <main className="content">
+        {roomCode ? <RoomPage key={roomCode} code={roomCode} /> : hash.startsWith('#/banks') ? <BanksPage /> : <HomePage />}
+      </main>
       {backendKind === 'local' && (
         <footer className="local-banner">
           目前是<strong>本機示範模式</strong>：只能在同一個瀏覽器的不同分頁之間連線。設定 Firebase 後就能跟朋友線上玩（見 README）。

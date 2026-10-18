@@ -75,6 +75,10 @@ export function HomePage() {
         {error && <p className="error">{error}</p>}
       </section>
 
+      <a className="button" href="#/banks">
+        ✏️ 自訂題庫：加入你們自己的題目
+      </a>
+
       <section>
         <h2>目前有的遊戲</h2>
         <div className="game-grid">

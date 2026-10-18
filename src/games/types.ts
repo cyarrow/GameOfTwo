@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react';
+import type { CustomContent } from '../banks';
 
 /** 一局結束時的結果：每位玩家這局得到的分數，以及顯示給大家看的訊息。 */
 export interface GameResult {
@@ -34,7 +35,8 @@ export interface GameModule<S, M> {
   rules: string[];
   minPlayers: number;
   maxPlayers: number;
-  setup(playerIds: string[], random: () => number): S;
+  /** custom：自訂題庫的內容，有用到題庫的遊戲才需要 */
+  setup(playerIds: string[], random: () => number, custom: CustomContent): S;
   /** 回傳新的狀態；動作不合法時丟出 GameError */
   applyMove(state: S, playerId: string, move: M): S;
   getResult(state: S, names: Record<string, string>): GameResult | null;
