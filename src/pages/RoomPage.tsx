@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { EmojiBurst } from '../components/EmojiBurst';
 import { GameStage } from '../components/GameStage';
 import { Lobby } from '../components/Lobby';
 import { Sidebar } from '../components/Sidebar';
@@ -94,6 +95,7 @@ function RoomSession({ code, name }: { code: string; name: string }) {
         </div>
         <Sidebar room={room} me={playerId} />
       </div>
+      <EmojiBurst chat={room.chat} />
     </div>
   );
 }

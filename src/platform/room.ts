@@ -86,7 +86,7 @@ export function startMatch(code: string, playerId: string, gameId: string): Prom
 /** 送出遊戲動作；成功回傳 null，失敗回傳錯誤訊息。 */
 export async function sendMove(code: string, playerId: string, move: unknown): Promise<string | null> {
   try {
-    await mutate(code, (r) => rs.applyMove(r, playerId, move, Date.now()));
+    await mutate(code, (r) => rs.applyMove(r, playerId, move, Date.now(), Math.random));
     return null;
   } catch (e) {
     return rs.errorMessage(e);
@@ -95,4 +95,17 @@ export async function sendMove(code: string, playerId: string, move: unknown): P
 
 export function backToLobby(code: string, playerId: string): Promise<void> {
   return mutate(code, (r) => rs.backToLobby(r, playerId));
+}
+
+export function setPunish(code: string, playerId: string, on: boolean): Promise<void> {
+  return mutate(code, (r) => rs.setPunish(r, playerId, on));
+}
+
+export function removeOfflinePlayer(code: string, playerId: string, targetId: string): Promise<void> {
+  return mutate(code, (r) => rs.removeOffline(r, playerId, targetId));
+}
+
+export function sendChat(code: string, playerId: string, text: string): Promise<void> {
+  const id = `${Date.now().toString(36)}${Math.floor(Math.random() * 1e6).toString(36)}`;
+  return mutate(code, (r) => rs.addChat(r, playerId, text, Date.now(), id));
 }

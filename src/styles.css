@@ -225,3 +225,115 @@ button.danger { background: var(--danger); color: #fff; border-color: transparen
 .db-line:hover:not(:disabled)::after { background: var(--accent); }
 .db-line:disabled { opacity: 1; cursor: default; }
 .db-line.last { outline: 2px solid var(--text); outline-offset: 1px; }
+
+/* 聊天與表情 */
+.chat-list { list-style: none; margin: 10px 0; padding: 0; display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto; font-size: 0.92rem; }
+.chat-list li { display: flex; flex-direction: column; overflow-wrap: anywhere; }
+.chat-list li.mine .chat-name { color: var(--accent); }
+.chat-name { font-size: 0.78rem; color: var(--muted); font-weight: 600; }
+.chat-emoji { font-size: 1.5rem; line-height: 1.2; }
+.emoji-row { display: flex; flex-wrap: wrap; gap: 2px; margin-bottom: 8px; }
+.emoji-row button { font-size: 1.15rem; padding: 2px 6px; }
+.emoji-burst { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 10; }
+.emoji-burst span { position: absolute; bottom: -60px; font-size: 3.5rem; animation: emoji-float 2.4s ease-out forwards; }
+@keyframes emoji-float {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateY(-75vh) scale(1.2); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .emoji-burst span { animation: emoji-fade 2.4s forwards; bottom: 40%; }
+  @keyframes emoji-fade { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
+}
+
+/* 懲罰模式 */
+.punish-toggle { display: flex; gap: 10px; align-items: flex-start; padding: 12px 16px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); cursor: pointer; }
+.punish-toggle.on { border-color: var(--danger); }
+.punish-toggle input { flex: none; width: 18px; height: 18px; margin-top: 3px; accent-color: var(--danger); }
+.punish-toggle span { display: flex; flex-direction: column; font-weight: 600; }
+.punish-toggle small { font-weight: 400; }
+.punishment { display: flex; flex-direction: column; gap: 2px; padding: 10px 14px; border-radius: 10px; background: var(--surface); border: 2px dashed var(--danger); }
+
+/* 誰是牛頭王 */
+.t6-rows { display: flex; flex-direction: column; gap: 6px; }
+.t6-row { display: grid; grid-template-columns: 4.2em repeat(5, minmax(0, 1fr)); gap: 4px; align-items: stretch; }
+.t6-row-label { display: flex; flex-direction: column; justify-content: center; font-size: 0.85rem; font-weight: 600; }
+.t6-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  min-height: 56px; padding: 4px 2px; border-radius: 8px; border: 2px solid var(--border); background: var(--surface);
+}
+.t6-card.heads-2 { background: #e8f1ff; }
+.t6-card.heads-3 { background: #fff4d6; }
+.t6-card.heads-5 { background: #ffe1e4; }
+.t6-card.heads-7 { background: #e9ddff; }
+.t6-num { font-size: 1.2rem; font-weight: 800; color: #1f1d2b; line-height: 1; }
+.t6-heads { font-size: 0.7rem; color: #1f1d2b; white-space: nowrap; }
+.t6-slot { border-radius: 8px; border: 2px dashed var(--border); }
+.t6-slot.danger { border-color: var(--danger); }
+.t6-hand { display: grid; grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); gap: 6px; }
+.t6-hand .t6-card { min-height: 64px; }
+.t6-hand .t6-card.selected { border-color: var(--accent); transform: translateY(-4px); }
+.t6-hand .t6-card:disabled:not(.selected) { opacity: 0.6; }
+.t6-log { margin: 0; padding: 10px 14px; list-style: none; border-radius: 10px; background: var(--surface-2); font-size: 0.9rem; display: flex; flex-direction: column; gap: 2px; }
+
+/* 你畫我猜 */
+.dg-word { font-size: 1.2rem; margin-top: 4px; }
+.dg-canvas { width: min(100%, 480px); aspect-ratio: 1; align-self: center; border-radius: var(--radius); border: 1px solid var(--border); background: #fff; touch-action: none; }
+.dg-canvas.drawing { cursor: crosshair; border-color: var(--accent); }
+.dg-swatch { width: 32px; height: 32px; padding: 0; border-radius: 50%; border: 2px solid var(--border); }
+.dg-swatch.selected { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.mono { font-family: ui-monospace, 'SF Mono', Menlo, monospace; letter-spacing: 0.15em; }
+.success { color: var(--success); }
+.chip.out { opacity: 0.45; text-decoration: line-through; }
+
+/* 黑白棋 */
+.oth-board { display: grid; gap: 2px; padding: 6px; border-radius: var(--radius); background: #1d6b45; width: min(100%, 420px); }
+.oth-cell { aspect-ratio: 1; padding: 0; border: none; border-radius: 4px; background: #2a8a5a; display: flex; align-items: center; justify-content: center; }
+.oth-cell:disabled { opacity: 1; cursor: default; }
+.oth-cell.legal::after { content: ''; width: 24%; height: 24%; border-radius: 50%; background: rgba(0, 0, 0, 0.3); }
+.oth-cell.last { box-shadow: inset 0 0 0 2px #f5c524; }
+.oth-disc { width: 82%; height: 82%; border-radius: 50%; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4); }
+.oth-disc.black { background: #1b1b1b; }
+.oth-disc.white { background: #f6f6f6; }
+
+/* 海戰棋 */
+.bs-boards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.bs-grid { display: grid; gap: 2px; width: min(100%, 340px); margin: 6px auto 0; padding: 4px; border-radius: 10px; background: #1e5a96; }
+.bs-cell { aspect-ratio: 1; padding: 0; border: none; border-radius: 3px; background: #3a7bc8; color: #fff; font-size: clamp(0.7rem, 3vw, 1rem); display: flex; align-items: center; justify-content: center; }
+button.bs-cell:not(:disabled):hover { background: #5b97dc; }
+.bs-cell:disabled { opacity: 1; cursor: default; }
+.bs-cell.ship { background: #8a94a6; }
+.bs-cell.hit { background: #e8505b; }
+.bs-cell.sunk { background: #6b2430; }
+.bs-cell.miss { background: #2d649f; }
+.bs-cell.last { box-shadow: inset 0 0 0 2px #f5c524; }
+
+/* 反應力對決 */
+.reaction-pad { min-height: 220px; font-size: 1.6rem; font-weight: 800; color: #fff; border: none; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+.reaction-pad.wait { background: #d6334a; }
+.reaction-pad.go { background: #1d9a6c; }
+.reaction-pad.done { background: var(--surface-2); color: var(--text); font-size: 1.1rem; }
+
+/* 顏色接龍 */
+.cc-table { display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap; }
+.cc-card { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 70px; border-radius: 8px; color: #fff; font-weight: 800; font-size: 1.3rem; border: 3px solid #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
+.cc-card.big { width: 80px; height: 116px; font-size: 2.2rem; }
+.cc-r { background: #e8505b; }
+.cc-y { background: #e8b100; }
+.cc-g { background: #1d9a6c; }
+.cc-b { background: #3f7ee8; }
+.cc-w { background: linear-gradient(135deg, #e8505b 25%, #e8b100 25% 50%, #1d9a6c 50% 75%, #3f7ee8 75%); }
+.cc-color-tag { padding: 2px 10px; border-radius: 99px; color: #fff; font-size: 0.85rem; font-weight: 600; }
+.cc-hand { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.cc-hand-btn { padding: 0; border: none; background: none; border-radius: 8px; }
+.cc-hand-btn:not(:disabled) { transform: translateY(-6px); }
+.cc-hand-btn:not(:disabled) .cc-card { box-shadow: 0 0 0 3px var(--accent); }
+.cc-hand-btn:disabled { opacity: 0.5; }
+.cc-color-btn { color: #fff; font-weight: 700; border: none; }
+
+/* 誰是臥底 */
+.uc-word { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 14px; border-radius: var(--radius); background: var(--accent-soft); text-align: center; }
+.uc-word strong { font-size: 1.8rem; }
+.uc-round { padding: 10px 14px; border-radius: 10px; background: var(--surface-2); }
+.uc-round ul { margin: 6px 0; padding-left: 18px; }

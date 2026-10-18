@@ -6,7 +6,7 @@ export interface GameResult {
   message: string;
 }
 
-/** 玩家做了不合法的動作（例如還沒輪到他）。訊息會直接顯示給該玩家。 */
+/** 玩家做了不合法的動作（例如還沒輪到該玩家）。訊息會直接顯示給該玩家。 */
 export class GameError extends Error {}
 
 export interface GameViewProps<S, M> {

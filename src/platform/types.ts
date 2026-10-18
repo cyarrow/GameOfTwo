@@ -18,6 +18,9 @@ export interface RoomRecord {
   scores?: Record<string, number>;
   match?: string;
   history?: string;
+  chat?: string;
+  /** 懲罰模式：每局結束時抽一張懲罰卡給輸的人 */
+  punish?: boolean;
 }
 
 export interface MatchData {
@@ -27,6 +30,20 @@ export interface MatchData {
   state: unknown;
   result: GameResult | null;
   startedAt: number;
+  /** 懲罰模式開啟時，對局結束會抽一張懲罰卡 */
+  punishment?: Punishment | null;
+}
+
+export interface Punishment {
+  losers: string[];
+  text: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  by: string;
+  text: string;
+  at: number;
 }
 
 export interface HistoryEntry {
@@ -47,4 +64,6 @@ export interface Room {
   scores: Record<string, number>;
   match: MatchData | null;
   history: HistoryEntry[];
+  chat: ChatMessage[];
+  punish: boolean;
 }

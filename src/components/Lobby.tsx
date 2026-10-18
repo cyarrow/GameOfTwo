@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { GAMES } from '../games/registry';
-import { startMatch } from '../platform/room';
+import { setPunish, startMatch } from '../platform/room';
 import { errorMessage, playerCountLabel } from '../platform/roomState';
 import type { Room } from '../platform/types';
 
@@ -10,7 +10,10 @@ export function Lobby({ room, me }: { room: Room; me: string }) {
   const isHost = room.hostId === me;
   const onlineCount = room.players.filter((p) => p.online).length;
   const host = room.players.find((p) => p.id === room.hostId);
-  const playable = GAMES.filter((g) => onlineCount >= g.minPlayers && onlineCount <= g.maxPlayers);
+  const fitsCount = (g: (typeof GAMES)[number]) => onlineCount >= g.minPlayers && onlineCount <= g.maxPlayers;
+  const playable = GAMES.filter(fitsCount);
+  // 遊戲很多，目前人數能玩的排前面
+  const sorted = [...playable, ...GAMES.filter((g) => !fitsCount(g))];
 
   async function start(gameId: string) {
     setBusy(true);
@@ -44,11 +47,23 @@ export function Lobby({ room, me }: { room: Room; me: string }) {
           </button>
         )}
       </div>
+      <label className={`punish-toggle ${room.punish ? 'on' : ''}`}>
+        <input
+          type="checkbox"
+          checked={room.punish}
+          disabled={!isHost}
+          onChange={(e) => void setPunish(room.code, me, e.target.checked).catch((err) => setError(errorMessage(err)))}
+        />
+        <span>
+          😈 懲罰模式{room.punish ? '：開啟' : '：關閉'}
+          <small className="muted">每局結束時抽一張懲罰卡給輸的人{isHost ? '' : '（由房主切換）'}</small>
+        </span>
+      </label>
       {error && <p className="error">{error}</p>}
 
       <div className="game-grid">
-        {GAMES.map((g) => {
-          const fits = onlineCount >= g.minPlayers && onlineCount <= g.maxPlayers;
+        {sorted.map((g) => {
+          const fits = fitsCount(g);
           return (
             <div key={g.id} className={`game-card ${fits ? '' : 'disabled'}`}>
               <div className="game-emoji">{g.emoji}</div>
