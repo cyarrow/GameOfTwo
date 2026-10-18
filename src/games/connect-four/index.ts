@@ -14,5 +14,6 @@ export const connectFour: GameModule<ConnectFourState, ConnectFourMove> = {
   setup,
   applyMove,
   getResult,
+  whoseTurn: (s) => (s.winner !== null || s.draw ? null : s.players[s.turn]),
   View: ConnectFourView,
 };

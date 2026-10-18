@@ -2,9 +2,21 @@ import type { GameViewProps } from '../types';
 import { nameOf, useMove } from '../helpers';
 import { bullheads, HAND_SIZE, sumBullheads, type TakeSixMove, type TakeSixState } from './logic';
 
-function Card({ value, onClick, disabled, selected }: { value: number; onClick?: () => void; disabled?: boolean; selected?: boolean }) {
+function Card({
+  value,
+  onClick,
+  disabled,
+  selected,
+  animate,
+}: {
+  value: number;
+  onClick?: () => void;
+  disabled?: boolean;
+  selected?: boolean;
+  animate?: boolean;
+}) {
   const heads = bullheads(value);
-  const className = `t6-card heads-${heads} ${selected ? 'selected' : ''}`;
+  const className = `t6-card heads-${heads} ${selected ? 'selected' : ''} ${animate ? 'pop-in' : ''}`;
   const content = (
     <>
       <span className="t6-num">{value}</span>
@@ -42,7 +54,7 @@ export function TakeSixView({ state, me, names, sendMove, finished }: GameViewPr
               <small className="muted">{sumBullheads(row)}🐮</small>
             </span>
             {row.map((c) => (
-              <Card key={c} value={c} />
+              <Card key={c} value={c} animate />
             ))}
             {Array.from({ length: 5 - row.length }, (_, k) => (
               <span key={`empty-${k}`} className={`t6-slot ${row.length + k === 4 ? 'danger' : ''}`} />

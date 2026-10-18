@@ -28,7 +28,7 @@ export function MindMeldView({ state, me, names, sendMove }: GameViewProps<MindM
             >
               <span>{opt}</span>
               {state.revealed && pickers.length > 0 && (
-                <span className="pickers">{pickers.map((id) => nameOf(names, id)).join('、')}</span>
+                <span className="pickers pop-in">{pickers.map((id) => nameOf(names, id)).join('、')}</span>
               )}
             </button>
           );

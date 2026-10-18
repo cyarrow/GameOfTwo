@@ -14,5 +14,6 @@ export const ticTacToe: GameModule<TicTacToeState, TicTacToeMove> = {
   setup,
   applyMove,
   getResult,
+  whoseTurn: (s) => (s.winner !== null || s.draw ? null : s.players[s.turn]),
   View: TicTacToeView,
 };

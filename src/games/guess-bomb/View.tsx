@@ -26,13 +26,17 @@ export function GuessBombView({ state, me, names, sendMove, finished }: GameView
         {finished ? (
           <>
             <span className="muted">密碼是</span>
-            <strong className="bomb">💥 {state.bomb}</strong>
+            <strong className="bomb pop-in">💥 {state.bomb}</strong>
           </>
         ) : (
           <>
-            <strong>{lo}</strong>
+            <strong key={`lo${lo}`} className="pop-in">
+              {lo}
+            </strong>
             <span className="muted">～</span>
-            <strong>{hi}</strong>
+            <strong key={`hi${hi}`} className="pop-in">
+              {hi}
+            </strong>
           </>
         )}
       </div>

@@ -13,7 +13,7 @@ export function RpsView({ state, me, names, sendMove, finished }: GameViewProps<
   return (
     <div className="stack">
       {state.last && (
-        <div className="rps-last">
+        <div key={state.last.round} className="rps-last pop-in">
           <div className="muted">第 {state.last.round} 輪</div>
           <div className="turn-order">
             {state.players.map((id) => (

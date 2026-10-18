@@ -1,5 +1,5 @@
 import type { GameModule } from '../types';
-import { applyMove, getResult, setup, type UndercoverMove, type UndercoverState } from './logic';
+import { applyMove, currentDescriber, getResult, setup, type UndercoverMove, type UndercoverState } from './logic';
 import { UndercoverView } from './View';
 
 export const undercover: GameModule<UndercoverState, UndercoverMove> = {
@@ -19,5 +19,6 @@ export const undercover: GameModule<UndercoverState, UndercoverMove> = {
   setup,
   applyMove,
   getResult,
+  whoseTurn: (s) => (s.winner ? null : currentDescriber(s)),
   View: UndercoverView,
 };

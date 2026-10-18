@@ -44,6 +44,8 @@ export interface GameModule<S, M> {
   /** 回傳新的狀態；動作不合法時丟出 GameError */
   applyMove(state: S, playerId: string, move: M): S;
   getResult(state: S, names: Record<string, string>): GameResult | null;
+  /** 輪流制的遊戲：現在輪到誰。平台用來在輪到你時發光提示並輕震；同時行動的遊戲不用提供 */
+  whoseTurn?(state: S): string | null;
   View: ComponentType<GameViewProps<S, M>>;
 }
 

@@ -3,6 +3,7 @@ import type { Room } from '../platform/types';
 import { MAX_PLAYERS } from '../platform/types';
 import { Avatar } from './Avatar';
 import { ChatBox } from './ChatBox';
+import { ScoreBump } from './ScoreBump';
 
 export function Sidebar({ room, me }: { room: Room; me: string }) {
   const ranked = [...room.players].sort((a, b) => (room.scores[b.id] ?? 0) - (room.scores[a.id] ?? 0));
@@ -35,7 +36,7 @@ export function Sidebar({ room, me }: { room: Room; me: string }) {
                     移除
                   </button>
                 )}
-                <span className="score">{room.scores[p.id] ?? 0} 分</span>
+                <ScoreBump value={room.scores[p.id] ?? 0} />
               </span>
             </li>
           ))}

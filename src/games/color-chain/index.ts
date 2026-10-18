@@ -1,5 +1,5 @@
 import type { GameModule } from '../types';
-import { applyMove, getResult, HAND_SIZE, setup, type ColorChainMove, type ColorChainState } from './logic';
+import { applyMove, currentPlayer, getResult, HAND_SIZE, setup, type ColorChainMove, type ColorChainState } from './logic';
 import { ColorChainView } from './View';
 
 export const colorChain: GameModule<ColorChainState, ColorChainMove> = {
@@ -20,5 +20,6 @@ export const colorChain: GameModule<ColorChainState, ColorChainMove> = {
   setup,
   applyMove,
   getResult,
+  whoseTurn: (s) => (s.winner ? null : currentPlayer(s)),
   View: ColorChainView,
 };

@@ -15,13 +15,26 @@ function useHash(): string {
   return hash;
 }
 
+/** 內容捲到導覽列底下時才顯示分隔線（捲動邊緣效果），在最上面時導覽列與背景融為一體 */
+function useScrolled(): boolean {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 4);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  return scrolled;
+}
+
 export function App() {
   const hash = useHash();
+  const scrolled = useScrolled();
   const roomCode = hash.match(/^#\/room\/([A-Za-z0-9]+)/)?.[1]?.toUpperCase();
 
   return (
     <div className="app">
-      <header className="topbar">
+      <header className={`topbar ${scrolled ? 'scrolled' : ''}`}>
         <a href="#/" className="brand">
           <span className="brand-mark">🎲</span>
           GameOfTwo

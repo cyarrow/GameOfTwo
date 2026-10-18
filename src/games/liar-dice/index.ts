@@ -1,5 +1,5 @@
 import type { GameModule } from '../types';
-import { applyMove, DICE_PER_PLAYER, getResult, setup, type LiarDiceMove, type LiarDiceState } from './logic';
+import { applyMove, currentPlayer, DICE_PER_PLAYER, getResult, setup, type LiarDiceMove, type LiarDiceState } from './logic';
 import { LiarDiceView } from './View';
 
 export const liarDice: GameModule<LiarDiceState, LiarDiceMove> = {
@@ -21,5 +21,6 @@ export const liarDice: GameModule<LiarDiceState, LiarDiceMove> = {
   setup,
   applyMove,
   getResult,
+  whoseTurn: (s) => (s.reveal ? null : currentPlayer(s)),
   View: LiarDiceView,
 };

@@ -19,5 +19,6 @@ export const othello: GameModule<OthelloState, OthelloMove> = {
   setup,
   applyMove,
   getResult,
+  whoseTurn: (s) => (s.over ? null : s.players[s.turn]),
   View: OthelloView,
 };

@@ -19,7 +19,9 @@ export function DotsBoxesView({ state, me, names, sendMove, finished }: GameView
         cells.push(<span key={key} className="db-dot" />);
       } else if (gr % 2 === 1 && gc % 2 === 1) {
         const owner = state.boxes[`${(gr - 1) / 2}-${(gc - 1) / 2}`];
-        cells.push(<span key={key} className="db-box" style={owner ? { background: colorOf(owner) } : undefined} />);
+        cells.push(
+          <span key={`${key}-${owner ?? ''}`} className={`db-box ${owner ? 'pop-in' : ''}`} style={owner ? { background: colorOf(owner) } : undefined} />,
+        );
       } else {
         const line = gr % 2 === 0 ? `h-${gr / 2}-${(gc - 1) / 2}` : `v-${(gr - 1) / 2}-${gc / 2}`;
         const drawer = state.lines[line];

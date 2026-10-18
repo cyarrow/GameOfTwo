@@ -1,5 +1,5 @@
 import type { GameModule } from '../types';
-import { applyMove, getResult, PAIRS, setup, type MemoryMove, type MemoryState } from './logic';
+import { applyMove, currentPlayer, getResult, PAIRS, setup, type MemoryMove, type MemoryState } from './logic';
 import { MemoryView } from './View';
 
 export const memory: GameModule<MemoryState, MemoryMove> = {
@@ -19,5 +19,6 @@ export const memory: GameModule<MemoryState, MemoryMove> = {
   setup,
   applyMove,
   getResult,
+  whoseTurn: currentPlayer,
   View: MemoryView,
 };

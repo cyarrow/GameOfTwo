@@ -19,5 +19,6 @@ export const bullsCows: GameModule<BullsCowsState, BullsCowsMove> = {
   setup,
   applyMove,
   getResult,
+  whoseTurn: (s) => (s.winner ? null : s.order[s.turn]),
   View: BullsCowsView,
 };

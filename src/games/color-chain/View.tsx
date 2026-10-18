@@ -52,7 +52,9 @@ export function ColorChainView({ state, me, names, sendMove, finished }: GameVie
     <div className="stack">
       <div className="cc-table">
         <div className="center stack-sm" style={{ alignItems: 'center' }}>
-          <CardFace card={topCard(state)} big />
+          <span key={state.discard[state.discard.length - 1]} className="throw-in">
+            <CardFace card={topCard(state)} big />
+          </span>
           <span className={`cc-color-tag cc-${state.color}`}>目前顏色：{COLOR_NAMES[state.color]}</span>
         </div>
         <div className="stack-sm">

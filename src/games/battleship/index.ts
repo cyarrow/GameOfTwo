@@ -1,5 +1,5 @@
 import type { GameModule } from '../types';
-import { applyMove, getResult, setup, SHIPS, SIZE, type BattleshipMove, type BattleshipState } from './logic';
+import { applyMove, bothReady, getResult, setup, SHIPS, SIZE, type BattleshipMove, type BattleshipState } from './logic';
 import { BattleshipView } from './View';
 
 export const battleship: GameModule<BattleshipState, BattleshipMove> = {
@@ -19,5 +19,6 @@ export const battleship: GameModule<BattleshipState, BattleshipMove> = {
   setup,
   applyMove,
   getResult,
+  whoseTurn: (s) => (s.winner || !bothReady(s) ? null : s.players[s.turn]),
   View: BattleshipView,
 };

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { GAMES } from '../games/registry';
 import type { AnyGame, GameCategory } from '../games/types';
 import { setPunish, startMatch } from '../platform/room';
@@ -78,13 +78,7 @@ export function Lobby({ room, me }: { room: Room; me: string }) {
       </div>
       {error && <p className="error">{error}</p>}
 
-      <div className="segmented" role="tablist" aria-label="遊戲分類">
-        {CATEGORIES.map((c) => (
-          <button key={c} role="tab" aria-selected={category === c} className={category === c ? 'on' : ''} onClick={() => setCategory(c)}>
-            {c}
-          </button>
-        ))}
-      </div>
+      <Segmented value={category} onChange={setCategory} />
 
       <div className="game-grid">
         {sorted.map((g) => {
@@ -100,6 +94,45 @@ export function Lobby({ room, me }: { room: Room; me: string }) {
           );
         })}
       </div>
+    </div>
+  );
+}
+
+/**
+ * 分類切換：選取框會滑到選到的分類。用 CSS transition（會從「目前畫面上的位置」
+ * 重新出發），所以切換到一半再點別的也不會跳動。
+ */
+function Segmented({ value, onChange }: { value: (typeof CATEGORIES)[number]; onChange: (c: (typeof CATEGORIES)[number]) => void }) {
+  const refs = useRef<(HTMLButtonElement | null)[]>([]);
+  const [box, setBox] = useState<{ left: number; width: number } | null>(null);
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      const el = refs.current[CATEGORIES.indexOf(value)];
+      if (el) setBox({ left: el.offsetLeft, width: el.offsetWidth });
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [value]);
+
+  return (
+    <div className="segmented" role="tablist" aria-label="遊戲分類">
+      {box && <span className="segmented-thumb" style={{ transform: `translateX(${box.left}px)`, width: box.width }} aria-hidden="true" />}
+      {CATEGORIES.map((c, i) => (
+        <button
+          key={c}
+          ref={(el) => {
+            refs.current[i] = el;
+          }}
+          role="tab"
+          aria-selected={value === c}
+          className={value === c ? 'on' : ''}
+          onClick={() => onChange(c)}
+        >
+          {c}
+        </button>
+      ))}
     </div>
   );
 }

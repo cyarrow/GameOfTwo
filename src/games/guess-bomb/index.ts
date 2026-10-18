@@ -1,5 +1,5 @@
 import type { GameModule } from '../types';
-import { applyMove, getResult, MAX, MIN, setup, type GuessBombMove, type GuessBombState } from './logic';
+import { applyMove, currentPlayer, getResult, MAX, MIN, setup, type GuessBombMove, type GuessBombState } from './logic';
 import { GuessBombView } from './View';
 
 export const guessBomb: GameModule<GuessBombState, GuessBombMove> = {
@@ -19,5 +19,6 @@ export const guessBomb: GameModule<GuessBombState, GuessBombMove> = {
   setup,
   applyMove,
   getResult,
+  whoseTurn: currentPlayer,
   View: GuessBombView,
 };

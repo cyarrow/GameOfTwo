@@ -28,7 +28,11 @@ export function ConnectFourView({ state, me, names, sendMove, finished }: GameVi
               onClick={() => send({ col })}
               aria-label={`第 ${col + 1} 行`}
             >
-              {cell === null ? '' : DISCS[cell]}
+              {cell === null ? '' : (
+                <span className="drop-in" style={{ '--drop': Math.floor(i / COLS) + 1 } as React.CSSProperties}>
+                  {DISCS[cell]}
+                </span>
+              )}
             </button>
           );
         })}

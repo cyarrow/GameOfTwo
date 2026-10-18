@@ -1,5 +1,5 @@
 import type { GameModule } from '../types';
-import { applyMove, getResult, setup, SIZE, type DotsBoxesMove, type DotsBoxesState } from './logic';
+import { applyMove, currentPlayer, getResult, setup, SIZE, type DotsBoxesMove, type DotsBoxesState } from './logic';
 import { DotsBoxesView } from './View';
 
 export const dotsBoxes: GameModule<DotsBoxesState, DotsBoxesMove> = {
@@ -19,5 +19,6 @@ export const dotsBoxes: GameModule<DotsBoxesState, DotsBoxesMove> = {
   setup,
   applyMove,
   getResult,
+  whoseTurn: currentPlayer,
   View: DotsBoxesView,
 };
