@@ -1,5 +1,5 @@
 import type { GameModule } from '../types';
-import { applyMove, getResult, setup, type UndercoverMove, type UndercoverState } from './logic';
+import { applyMove, currentDescriber, getResult, setup, type UndercoverMove, type UndercoverState } from './logic';
 import { UndercoverView } from './View';
 
 export const undercover: GameModule<UndercoverState, UndercoverMove> = {
@@ -13,10 +13,12 @@ export const undercover: GameModule<UndercoverState, UndercoverMove> = {
     '描述完大家投票，得票最多的人淘汰；平票就沒有人淘汰。',
     '淘汰到臥底，平民全體各得 1 分；臥底撐到只剩 2 人（或撐過 4 輪），臥底得 1 分。',
   ],
+  category: '派對',
   minPlayers: 3,
   maxPlayers: 4,
   setup,
   applyMove,
   getResult,
+  whoseTurn: (s) => (s.winner ? null : currentDescriber(s)),
   View: UndercoverView,
 };

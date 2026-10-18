@@ -12,6 +12,7 @@ export const rps: GameModule<RpsState, RpsMove> = {
     '只出現兩種手勢時才分勝負，出贏的人各拿 1 勝；三種都有或全部一樣算平手。',
     `先拿到 ${TARGET_WINS} 勝的人得 1 分（同時達到就一起得分）。`,
   ],
+  category: '反應',
   minPlayers: 2,
   maxPlayers: 4,
   setup,

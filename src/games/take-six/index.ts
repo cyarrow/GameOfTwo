@@ -15,6 +15,7 @@ export const takeSix: GameModule<TakeSixState, TakeSixMove> = {
     '牌比每排結尾都小的話，自動收走牛頭最少的那一排。',
     '每張牌有 1～7 個牛頭（🐮）。打完全部手牌後，收到牛頭最少的人得 1 分。',
   ],
+  category: '卡牌',
   minPlayers: 2,
   maxPlayers: 4,
   setup,

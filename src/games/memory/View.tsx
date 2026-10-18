@@ -33,8 +33,8 @@ export function MemoryView({ state, me, names, sendMove, finished }: GameViewPro
           const faceUp = owner !== null || state.flipped.includes(i) || finished;
           return (
             <button
-              key={i}
-              className={`memory-card ${faceUp ? 'up' : ''} ${mismatch && state.flipped.includes(i) ? 'miss' : ''}`}
+              key={`${i}-${faceUp}`}
+              className={`memory-card flip-in ${faceUp ? 'up' : ''} ${mismatch && state.flipped.includes(i) ? 'miss' : ''}`}
               style={owner ? { borderColor: colorOf(owner) } : undefined}
               disabled={!myTurn || busy || owner !== null || (!mismatch && state.flipped.includes(i))}
               onClick={() => send({ card: i })}

@@ -13,10 +13,12 @@ export const bullsCows: GameModule<BullsCowsState, BullsCowsMove> = {
     '所有人的猜測和結果都看得到，可以利用別人的線索。',
     '第一個猜中（4A）的人得 1 分。',
   ],
+  category: '策略',
   minPlayers: 2,
   maxPlayers: 4,
   setup,
   applyMove,
   getResult,
+  whoseTurn: (s) => (s.winner ? null : s.order[s.turn]),
   View: BullsCowsView,
 };

@@ -30,7 +30,7 @@ export function TicTacToeView({ state, me, names, sendMove, finished }: GameView
             onClick={() => play(i)}
             aria-label={`第 ${i + 1} 格`}
           >
-            {cell === null ? '' : MARKS[cell]}
+            {cell === null ? '' : <span className="pop-in">{MARKS[cell]}</span>}
           </button>
         ))}
       </div>

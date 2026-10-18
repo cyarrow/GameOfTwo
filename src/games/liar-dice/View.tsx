@@ -102,7 +102,9 @@ export function LiarDiceView({ state, me, names, sendMove, finished }: GameViewP
               {id === me ? '（你）' : ''}
             </span>
             {finished ? (
-              <Dice values={state.dice[id]} highlight={last?.face} />
+              <span className="roll-in">
+                <Dice values={state.dice[id]} highlight={last?.face} />
+              </span>
             ) : (
               <span className="muted">🎲 × {DICE_PER_PLAYER}</span>
             )}

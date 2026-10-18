@@ -1,14 +1,14 @@
+import { EMPTY_CONTENT, pickMixed, type CustomContent } from '../../banks';
 import { GameError, type GameResult } from '../types';
 import { joinNames, pointsForTop } from '../helpers';
-import { shuffle } from '../shuffle';
-import { QUESTIONS } from './questions';
+import { QUESTIONS, type Question } from './questions';
 
 export const ROUNDS = 5;
 
 export interface MindMeldState {
   players: string[];
-  /** 這局抽到的題目在題庫中的編號 */
-  questions: number[];
+  /** 這局抽到的題目（舊版存的是內建題庫的編號，畫面上用 questionAt 讀取） */
+  questions: (Question | number)[];
   round: number;
   /** answers[第幾題][玩家 id] = 選項編號 */
   answers: Record<string, number>[];
@@ -18,11 +18,8 @@ export interface MindMeldState {
 
 export type MindMeldMove = { type: 'answer'; round: number; option: number } | { type: 'next'; round: number };
 
-export function setup(playerIds: string[], random: () => number): MindMeldState {
-  const questions = shuffle(
-    QUESTIONS.map((_, i) => i),
-    random,
-  ).slice(0, ROUNDS);
+export function setup(playerIds: string[], random: () => number, custom: CustomContent = EMPTY_CONTENT): MindMeldState {
+  const questions = pickMixed(custom.mindMeld, QUESTIONS, ROUNDS, random, (q) => q.q);
   return {
     players: playerIds,
     questions,
@@ -31,6 +28,11 @@ export function setup(playerIds: string[], random: () => number): MindMeldState 
     revealed: false,
     scores: Object.fromEntries(playerIds.map((id) => [id, 0])),
   };
+}
+
+export function questionAt(state: MindMeldState, round: number): Question {
+  const q = state.questions[round];
+  return typeof q === 'number' ? QUESTIONS[q] : q;
 }
 
 export function isFinished(state: MindMeldState): boolean {

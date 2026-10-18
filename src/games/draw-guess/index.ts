@@ -14,6 +14,7 @@ export const drawGuess: GameModule<DrawGuessState, DrawGuessMove> = {
     '所有人都猜對、或畫家按「放棄這題」，就公布答案。',
     '全部題目結束後，總分最高的人得 1 分。',
   ],
+  category: '派對',
   minPlayers: 2,
   maxPlayers: 4,
   setup,

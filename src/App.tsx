@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { backendKind } from './backend';
+import { BanksPage } from './pages/BanksPage';
 import { HomePage } from './pages/HomePage';
 import { RoomPage } from './pages/RoomPage';
 
@@ -14,18 +15,37 @@ function useHash(): string {
   return hash;
 }
 
+/** 內容捲到導覽列底下時才顯示分隔線（捲動邊緣效果），在最上面時導覽列與背景融為一體 */
+function useScrolled(): boolean {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 4);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  return scrolled;
+}
+
 export function App() {
   const hash = useHash();
+  const scrolled = useScrolled();
   const roomCode = hash.match(/^#\/room\/([A-Za-z0-9]+)/)?.[1]?.toUpperCase();
 
   return (
     <div className="app">
-      <header className="topbar">
+      <header className={`topbar ${scrolled ? 'scrolled' : ''}`}>
         <a href="#/" className="brand">
-          🎲 GameOfTwo
+          <span className="brand-mark">🎲</span>
+          GameOfTwo
+        </a>
+        <a href="#/banks" className="topbar-link">
+          ✏️ 自訂題庫
         </a>
       </header>
-      <main className="content">{roomCode ? <RoomPage key={roomCode} code={roomCode} /> : <HomePage />}</main>
+      <main className="content">
+        {roomCode ? <RoomPage key={roomCode} code={roomCode} /> : hash.startsWith('#/banks') ? <BanksPage /> : <HomePage />}
+      </main>
       {backendKind === 'local' && (
         <footer className="local-banner">
           目前是<strong>本機示範模式</strong>：只能在同一個瀏覽器的不同分頁之間連線。設定 Firebase 後就能跟朋友線上玩（見 README）。

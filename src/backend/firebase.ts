@@ -35,8 +35,12 @@ export function createFirebaseBackend(databaseURL: string): Backend {
         value: result.snapshot.exists() ? (result.snapshot.val() as T) : null,
       };
     },
-    subscribe<T>(path: string, cb: (value: T | null) => void) {
-      return onValue(ref(db, path), (snap) => cb(snap.exists() ? (snap.val() as T) : null));
+    subscribe<T>(path: string, cb: (value: T | null) => void, onError?: (error: Error) => void) {
+      return onValue(
+        ref(db, path),
+        (snap) => cb(snap.exists() ? (snap.val() as T) : null),
+        (error) => onError?.(error),
+      );
     },
     onDisconnectSet: (path, value) => onDisconnect(ref(db, path)).set(value),
     cancelOnDisconnect: (path) => onDisconnect(ref(db, path)).cancel(),

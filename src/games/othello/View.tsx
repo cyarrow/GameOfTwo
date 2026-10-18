@@ -33,7 +33,7 @@ export function OthelloView({ state, me, names, sendMove, finished }: GameViewPr
             onClick={() => send({ cell: i })}
             aria-label={`第 ${Math.floor(i / SIZE) + 1} 列第 ${(i % SIZE) + 1} 行`}
           >
-            {cell !== null && <span className={`oth-disc ${cell === 0 ? 'black' : 'white'}`} />}
+            {cell !== null && <span key={cell} className={`oth-disc ${cell === 0 ? 'black' : 'white'}`} />}
           </button>
         ))}
       </div>

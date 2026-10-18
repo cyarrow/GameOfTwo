@@ -1,3 +1,4 @@
+import { EMPTY_CONTENT, pickOne, type CustomContent } from '../../banks';
 import { GameError, type GameResult } from '../types';
 import { nameOf } from '../helpers';
 import { shuffle } from '../shuffle';
@@ -39,8 +40,8 @@ export interface UndercoverState {
 
 export type UndercoverMove = { type: 'describe'; round: number; text: string } | { type: 'vote'; round: number; target: string };
 
-export function setup(playerIds: string[], random: () => number): UndercoverState {
-  const pair = WORD_PAIRS[Math.floor(random() * WORD_PAIRS.length)];
+export function setup(playerIds: string[], random: () => number, custom: CustomContent = EMPTY_CONTENT): UndercoverState {
+  const pair = pickOne(custom.undercover, WORD_PAIRS, random);
   const words: [string, string] = random() < 0.5 ? [pair[0], pair[1]] : [pair[1], pair[0]];
   const order = shuffle(playerIds, random);
   return {

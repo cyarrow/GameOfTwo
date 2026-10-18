@@ -13,6 +13,7 @@ export const mindMeld: GameModule<MindMeldState, MindMeldMove> = {
     '你跟幾個人選一樣，這題就得幾分。',
     '默契分最高的人得 1 分；大家同分的話全員各得 1 分。',
   ],
+  category: '派對',
   minPlayers: 2,
   maxPlayers: 4,
   setup,

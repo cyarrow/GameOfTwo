@@ -5,6 +5,33 @@
         ".read": true,
         ".write": true
       }
+    },
+    "banks": {
+      ".read": true,
+      "mind-meld": {
+        "$item": {
+          ".write": true,
+          ".validate": "newData.child('q').isString() && newData.child('q').val().length <= 40 && newData.child('options/0').isString() && newData.child('options/1').isString() && newData.child('options/2').isString() && newData.child('options/3').isString() && newData.child('options/0').val().length <= 12 && newData.child('options/1').val().length <= 12 && newData.child('options/2').val().length <= 12 && newData.child('options/3').val().length <= 12"
+        }
+      },
+      "draw-guess": {
+        "$item": {
+          ".write": true,
+          ".validate": "newData.child('word').isString() && newData.child('word').val().length <= 10"
+        }
+      },
+      "undercover": {
+        "$item": {
+          ".write": true,
+          ".validate": "newData.child('a').isString() && newData.child('b').isString() && newData.child('a').val().length <= 10 && newData.child('b').val().length <= 10"
+        }
+      },
+      "punishments": {
+        "$item": {
+          ".write": true,
+          ".validate": "newData.child('text').isString() && newData.child('text').val().length <= 40"
+        }
+      }
     }
   }
 }

@@ -76,7 +76,7 @@ export function ReactionView({ state, me, names, sendMove }: GameViewProps<React
       )}
 
       {previous && (
-        <div className="rps-last">
+        <div key={state.round} className="rps-last pop-in">
           <div className="muted">第 {state.round} 輪結果</div>
           <div className="turn-order">
             {state.players.map((id) => (

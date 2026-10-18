@@ -1,5 +1,5 @@
 import type { GameModule } from '../types';
-import { applyMove, getResult, MAX, MIN, setup, type GuessBombMove, type GuessBombState } from './logic';
+import { applyMove, currentPlayer, getResult, MAX, MIN, setup, type GuessBombMove, type GuessBombState } from './logic';
 import { GuessBombView } from './View';
 
 export const guessBomb: GameModule<GuessBombState, GuessBombMove> = {
@@ -13,10 +13,12 @@ export const guessBomb: GameModule<GuessBombState, GuessBombMove> = {
     '沒猜中的話，範圍會往密碼的方向縮小。',
     '猜中密碼的人輸，其他人各得 1 分。',
   ],
+  category: '派對',
   minPlayers: 2,
   maxPlayers: 4,
   setup,
   applyMove,
   getResult,
+  whoseTurn: currentPlayer,
   View: GuessBombView,
 };

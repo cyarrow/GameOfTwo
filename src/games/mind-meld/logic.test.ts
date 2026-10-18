@@ -1,12 +1,25 @@
 import { describe, expect, it } from 'vitest';
-import { applyMove, getResult, ROUNDS, setup } from './logic';
+import { EMPTY_CONTENT } from '../../banks';
+import { applyMove, getResult, questionAt, ROUNDS, setup } from './logic';
 import { QUESTIONS } from './questions';
 
 describe('默契大考驗', () => {
   it('抽出不重複的題目', () => {
     const s = setup(['a', 'b'], Math.random);
     expect(new Set(s.questions).size).toBe(ROUNDS);
-    expect(s.questions.every((q) => q >= 0 && q < QUESTIONS.length)).toBe(true);
+    expect(s.questions.every((q) => QUESTIONS.includes(q as (typeof QUESTIONS)[number]))).toBe(true);
+  });
+
+  it('自訂題目優先，最多佔一半', () => {
+    const custom = Array.from({ length: 10 }, (_, i) => ({ q: `自訂${i}`, options: ['a', 'b', 'c', 'd'] as [string, string, string, string] }));
+    const s = setup(['a', 'b'], Math.random, { ...EMPTY_CONTENT, mindMeld: custom });
+    const n = s.questions.filter((q) => typeof q === 'object' && q.q.startsWith('自訂')).length;
+    expect(n).toBe(Math.ceil(ROUNDS / 2));
+  });
+
+  it('舊版存題號的狀態也讀得到題目', () => {
+    const s = { ...setup(['a', 'b'], Math.random), questions: [3, 1, 4, 1, 5] };
+    expect(questionAt(s, 0)).toBe(QUESTIONS[3]);
   });
 
   it('全員作答才公布，跟幾個人一樣就得幾分', () => {

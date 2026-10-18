@@ -33,11 +33,11 @@ function Grid({
         ].join(' ');
         return onFire ? (
           <button key={i} className={cls} disabled={shot.has(i)} onClick={() => onFire(i)} aria-label={`開砲第 ${i + 1} 格`}>
-            {hit ? '💥' : miss ? '·' : ''}
+            {hit ? <span className="pop-in">💥</span> : miss ? <span className="pop-in">·</span> : ''}
           </button>
         ) : (
           <span key={i} className={cls}>
-            {hit ? '💥' : miss ? '·' : ''}
+            {hit ? <span className="pop-in">💥</span> : miss ? <span className="pop-in">·</span> : ''}
           </span>
         );
       })}

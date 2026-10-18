@@ -1,4 +1,7 @@
 import type { ComponentType } from 'react';
+import type { CustomContent } from '../banks';
+
+export type GameCategory = '派對' | '卡牌' | '反應' | '策略';
 
 /** 一局結束時的結果：每位玩家這局得到的分數，以及顯示給大家看的訊息。 */
 export interface GameResult {
@@ -32,12 +35,17 @@ export interface GameModule<S, M> {
   emoji: string;
   description: string;
   rules: string[];
+  /** 大廳分類篩選用 */
+  category: GameCategory;
   minPlayers: number;
   maxPlayers: number;
-  setup(playerIds: string[], random: () => number): S;
+  /** custom：自訂題庫的內容，有用到題庫的遊戲才需要 */
+  setup(playerIds: string[], random: () => number, custom: CustomContent): S;
   /** 回傳新的狀態；動作不合法時丟出 GameError */
   applyMove(state: S, playerId: string, move: M): S;
   getResult(state: S, names: Record<string, string>): GameResult | null;
+  /** 輪流制的遊戲：現在輪到誰。平台用來在輪到你時發光提示並輕震；同時行動的遊戲不用提供 */
+  whoseTurn?(state: S): string | null;
   View: ComponentType<GameViewProps<S, M>>;
 }
 

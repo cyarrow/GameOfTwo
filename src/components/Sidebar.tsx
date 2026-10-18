@@ -1,7 +1,9 @@
 import { removeOfflinePlayer } from '../platform/room';
 import type { Room } from '../platform/types';
 import { MAX_PLAYERS } from '../platform/types';
+import { Avatar } from './Avatar';
 import { ChatBox } from './ChatBox';
+import { ScoreBump } from './ScoreBump';
 
 export function Sidebar({ room, me }: { room: Room; me: string }) {
   const ranked = [...room.players].sort((a, b) => (room.scores[b.id] ?? 0) - (room.scores[a.id] ?? 0));
@@ -10,17 +12,20 @@ export function Sidebar({ room, me }: { room: Room; me: string }) {
   return (
     <aside className="sidebar stack">
       <section className="card">
-        <h3>
-          玩家 {room.players.length}/{MAX_PLAYERS}
+        <h3 className="panel-title">
+          玩家 <span className="muted">{room.players.length}/{MAX_PLAYERS}</span>
         </h3>
         <ul className="player-list">
           {ranked.map((p) => (
             <li key={p.id} className={p.online ? '' : 'offline'}>
               <span className="player-name">
-                {p.id === room.hostId && <span title="房主">👑 </span>}
-                {p.name}
-                {p.id === me && <span className="muted">（你）</span>}
-                {!p.online && <span className="muted"> 離線</span>}
+                <Avatar id={p.id} name={p.name} size={30} dim={!p.online} />
+                <span>
+                  {p.name}
+                  {p.id === room.hostId && <span title="房主"> 👑</span>}
+                  {p.id === me && <span className="muted">（你）</span>}
+                  {!p.online && <small className="muted"> 離線</small>}
+                </span>
               </span>
               <span className="row">
                 {isHost && !p.online && (
@@ -31,7 +36,7 @@ export function Sidebar({ room, me }: { room: Room; me: string }) {
                     移除
                   </button>
                 )}
-                <span className="score">{room.scores[p.id] ?? 0} 分</span>
+                <ScoreBump value={room.scores[p.id] ?? 0} />
               </span>
             </li>
           ))}
@@ -42,7 +47,7 @@ export function Sidebar({ room, me }: { room: Room; me: string }) {
 
       {room.history.length > 0 && (
         <section className="card">
-          <h3>對戰紀錄</h3>
+          <h3 className="panel-title">對戰紀錄</h3>
           <ul className="history">
             {room.history.map((h) => (
               <li key={h.at}>{h.message}</li>

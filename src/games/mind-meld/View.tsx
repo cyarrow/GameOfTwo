@@ -1,11 +1,10 @@
 import type { GameViewProps } from '../types';
 import { nameOf, useMove } from '../helpers';
-import { isFinished, type MindMeldMove, type MindMeldState } from './logic';
-import { QUESTIONS } from './questions';
+import { isFinished, questionAt, type MindMeldMove, type MindMeldState } from './logic';
 
 export function MindMeldView({ state, me, names, sendMove }: GameViewProps<MindMeldState, MindMeldMove>) {
   const { send, error, busy } = useMove(sendMove);
-  const question = QUESTIONS[state.questions[state.round]];
+  const question = questionAt(state, state.round);
   const answers = state.answers[state.round];
   const myAnswer = me ? answers[me] : undefined;
   const answeredCount = state.players.filter((id) => id in answers).length;
@@ -29,7 +28,7 @@ export function MindMeldView({ state, me, names, sendMove }: GameViewProps<MindM
             >
               <span>{opt}</span>
               {state.revealed && pickers.length > 0 && (
-                <span className="pickers">{pickers.map((id) => nameOf(names, id)).join('、')}</span>
+                <span className="pickers pop-in">{pickers.map((id) => nameOf(names, id)).join('、')}</span>
               )}
             </button>
           );

@@ -1,5 +1,5 @@
 import type { GameModule } from '../types';
-import { applyMove, DICE_PER_PLAYER, getResult, setup, type LiarDiceMove, type LiarDiceState } from './logic';
+import { applyMove, currentPlayer, DICE_PER_PLAYER, getResult, setup, type LiarDiceMove, type LiarDiceState } from './logic';
 import { LiarDiceView } from './View';
 
 export const liarDice: GameModule<LiarDiceState, LiarDiceMove> = {
@@ -15,10 +15,12 @@ export const liarDice: GameModule<LiarDiceState, LiarDiceMove> = {
     '不相信上一口的話就喊「開」：實際數量不足，喊的人輸；否則開的人輸。',
     '輸的人 0 分，其他人各得 1 分。',
   ],
+  category: '派對',
   minPlayers: 2,
   maxPlayers: 4,
   setup,
   applyMove,
   getResult,
+  whoseTurn: (s) => (s.reveal ? null : currentPlayer(s)),
   View: LiarDiceView,
 };
