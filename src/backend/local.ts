@@ -122,8 +122,14 @@ export async function createLocalBackend(): Promise<Backend> {
 
   const write = (path: string, value: unknown) => update((tree) => setAt(tree, path, value)).then(() => {});
 
-  channel.onmessage = () => void notify();
+  channel.onmessage = (e: MessageEvent<'changed' | { disconnect: [string, unknown][] }>) => {
+    if (e.data === 'changed') void notify();
+    else for (const [path, value] of e.data.disconnect) void write(path, value);
+  };
   window.addEventListener('pagehide', () => {
+    if (disconnectWrites.size === 0) return;
+    // IndexedDB 寫入是非同步的，分頁關閉時可能來不及寫完，所以也請其他還開著的分頁代為寫入
+    channel.postMessage({ disconnect: [...disconnectWrites] });
     for (const [path, value] of disconnectWrites) void write(path, value);
   });
 

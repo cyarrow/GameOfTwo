@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { GAMES } from '../games/registry';
-import { startMatch } from '../platform/room';
+import { setPunish, startMatch } from '../platform/room';
 import { errorMessage, playerCountLabel } from '../platform/roomState';
 import type { Room } from '../platform/types';
 
@@ -44,6 +44,18 @@ export function Lobby({ room, me }: { room: Room; me: string }) {
           </button>
         )}
       </div>
+      <label className={`punish-toggle ${room.punish ? 'on' : ''}`}>
+        <input
+          type="checkbox"
+          checked={room.punish}
+          disabled={!isHost}
+          onChange={(e) => void setPunish(room.code, me, e.target.checked).catch((err) => setError(errorMessage(err)))}
+        />
+        <span>
+          😈 懲罰模式{room.punish ? '：開啟' : '：關閉'}
+          <small className="muted">每局結束時抽一張懲罰卡給輸的人{isHost ? '' : '（由房主切換）'}</small>
+        </span>
+      </label>
       {error && <p className="error">{error}</p>}
 
       <div className="game-grid">

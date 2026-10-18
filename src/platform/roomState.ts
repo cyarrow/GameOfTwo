@@ -1,6 +1,7 @@
 import { getGame } from '../games/registry';
 import { GameError } from '../games/types';
-import type { HistoryEntry, MatchData, Player, Room, RoomRecord } from './types';
+import { PUNISHMENTS } from './punishments';
+import type { ChatMessage, HistoryEntry, MatchData, Player, Punishment, Room, RoomRecord } from './types';
 import { MAX_PLAYERS } from './types';
 
 /**
@@ -10,6 +11,8 @@ import { MAX_PLAYERS } from './types';
 export class RoomError extends Error {}
 
 const HISTORY_LIMIT = 20;
+const CHAT_LIMIT = 50;
+export const CHAT_MAX_LENGTH = 100;
 
 export function sortedPlayers(record: RoomRecord): Player[] {
   return Object.entries(record.players ?? {})
@@ -32,6 +35,10 @@ export function decodeHistory(record: RoomRecord): HistoryEntry[] {
   return record.history ? (JSON.parse(record.history) as HistoryEntry[]) : [];
 }
 
+export function decodeChat(record: RoomRecord): ChatMessage[] {
+  return record.chat ? (JSON.parse(record.chat) as ChatMessage[]) : [];
+}
+
 export function toRoom(code: string, record: RoomRecord): Room {
   return {
     code,
@@ -40,6 +47,8 @@ export function toRoom(code: string, record: RoomRecord): Room {
     scores: record.scores ?? {},
     match: decodeMatch(record),
     history: decodeHistory(record),
+    chat: decodeChat(record),
+    punish: record.punish === true,
   };
 }
 
@@ -123,7 +132,20 @@ export function startMatch(
   return { ...record, match: JSON.stringify(match) };
 }
 
-export function applyMove(record: RoomRecord, playerId: string, move: unknown, now: number): RoomRecord {
+/** 這局沒拿到分數的人就是輸家；大家都沒分（例如平手）時不懲罰。 */
+function drawPunishment(match: MatchData, points: Record<string, number>, random: () => number): Punishment | null {
+  const losers = match.playerIds.filter((id) => !((points[id] ?? 0) > 0));
+  if (losers.length === 0 || losers.length === match.playerIds.length) return null;
+  return { losers, text: PUNISHMENTS[Math.floor(random() * PUNISHMENTS.length)] };
+}
+
+export function applyMove(
+  record: RoomRecord,
+  playerId: string,
+  move: unknown,
+  now: number,
+  random: () => number,
+): RoomRecord {
   const match = decodeMatch(record);
   if (!isActiveMatch(match)) throw new RoomError('這局已經結束了');
   if (!match.playerIds.includes(playerId)) throw new RoomError('你沒有參加這一局');
@@ -133,7 +155,8 @@ export function applyMove(record: RoomRecord, playerId: string, move: unknown, n
   const state = game.applyMove(match.state, playerId, move);
   const names = Object.fromEntries(sortedPlayers(record).map((p) => [p.id, p.name]));
   const result = game.getResult(state, names);
-  const next: RoomRecord = { ...record, match: JSON.stringify({ ...match, state, result }) };
+  const punishment = result && record.punish ? drawPunishment(match, result.points, random) : null;
+  const next: RoomRecord = { ...record, match: JSON.stringify({ ...match, state, result, punishment }) };
 
   if (result) {
     const scores = { ...record.scores };
@@ -153,6 +176,28 @@ export function backToLobby(record: RoomRecord, requesterId: string): RoomRecord
   const next = { ...record };
   delete next.match;
   return next;
+}
+
+export function setPunish(record: RoomRecord, requesterId: string, on: boolean): RoomRecord {
+  if (hostOf(record) !== requesterId) throw new RoomError('只有房主可以切換懲罰模式');
+  return { ...record, punish: on };
+}
+
+/** 房主把離線的玩家移出房間（例如關掉分頁就沒回來的人） */
+export function removeOffline(record: RoomRecord, requesterId: string, targetId: string): RoomRecord {
+  if (hostOf(record) !== requesterId) throw new RoomError('只有房主可以移除玩家');
+  const target = record.players?.[targetId];
+  if (!target) throw new RoomError('找不到這位玩家');
+  if (target.online) throw new RoomError('只能移除離線的玩家');
+  return leave(record, targetId) ?? record;
+}
+
+export function addChat(record: RoomRecord, playerId: string, text: string, now: number, id: string): RoomRecord {
+  if (!record.players?.[playerId]?.name) throw new RoomError('你不在這個房間');
+  const trimmed = text.trim().slice(0, CHAT_MAX_LENGTH);
+  if (!trimmed) throw new RoomError('訊息不能是空的');
+  const chat = [...decodeChat(record), { id, by: playerId, text: trimmed, at: now }];
+  return { ...record, chat: JSON.stringify(chat.slice(-CHAT_LIMIT)) };
 }
 
 export function playerCountLabel(game: { minPlayers: number; maxPlayers: number }): string {

@@ -72,6 +72,14 @@ export function GameStage({ room, match, me }: { room: Room; match: MatchData; m
       {match.result && (
         <div className="result" role="status">
           <p className="result-message">{match.result.message}</p>
+          {match.punishment && (
+            <div className="punishment">
+              <span className="muted">😈 懲罰卡</span>
+              <strong>
+                {match.punishment.losers.map((id) => names[id] ?? '（已離開）').join('、')}：{match.punishment.text}
+              </strong>
+            </div>
+          )}
           {isHost ? (
             <div className="row">
               <button className="primary" onClick={() => run(() => startMatch(room.code, me, game.id))}>
