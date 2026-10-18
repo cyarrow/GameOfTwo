@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { backendKind } from './backend';
+import { UpdateBanner } from './components/UpdateBanner';
 import { BanksPage } from './pages/BanksPage';
 import { HomePage } from './pages/HomePage';
 import { RoomPage } from './pages/RoomPage';
@@ -43,6 +44,7 @@ export function App() {
           ✏️ 自訂題庫
         </a>
       </header>
+      <UpdateBanner />
       <main className="content">
         {roomCode ? <RoomPage key={roomCode} code={roomCode} /> : hash.startsWith('#/banks') ? <BanksPage /> : <HomePage />}
       </main>

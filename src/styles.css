@@ -126,6 +126,18 @@ p { margin: 0; }
 .brand-mark { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: var(--accent-grad); font-size: 1.05rem; box-shadow: var(--shadow-sm); }
 .topbar-link { color: var(--muted); text-decoration: none; font-weight: 600; font-size: 0.92rem; padding: 6px 12px; border-radius: 99px; }
 .topbar-link:hover { background: var(--surface-2); color: var(--text); }
+/* 新版本提示：從導覽列下方滑出，收起時往同一個方向回去 */
+.update-banner {
+  position: sticky; top: 64px; z-index: 4;
+  display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+  width: min(100% - 32px, 560px); margin: 12px auto 0; padding: 10px 12px 10px 18px;
+  border-radius: 16px; font-weight: 700;
+  background: var(--surface); border: 1px solid var(--border);
+  backdrop-filter: blur(22px) saturate(170%); -webkit-backdrop-filter: blur(22px) saturate(170%);
+  box-shadow: inset 0 1px 0 var(--glass-edge), var(--shadow-lg);
+  animation: slide-down var(--spring-bounce-ms) var(--spring-bounce) both;
+}
+@keyframes slide-down { from { transform: translateY(-24px); opacity: 0; } to { transform: none; opacity: 1; } }
 .content { flex: 1; width: 100%; max-width: 1100px; margin: 0 auto; padding: 28px 16px 56px; }
 .local-banner { padding: 10px 16px; text-align: center; font-size: 0.85rem; background: var(--surface); border-top: 1px solid var(--border); color: var(--muted); }
 
@@ -193,6 +205,8 @@ button:focus-visible, .button:focus-visible, a:focus-visible { outline: 3px soli
 
 .field { display: flex; flex-direction: column; gap: 8px; font-weight: 650; }
 .code-input { text-transform: uppercase; letter-spacing: 0.3em; font-weight: 750; text-align: center; }
+/* 字距只給輸入的數字/房號用，提示文字維持正常字距 */
+.code-input::placeholder { letter-spacing: normal; font-weight: 500; }
 
 .badge, .tag { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: 0.78rem; font-weight: 650; }
 .badge { background: var(--accent-soft); color: var(--accent); }
@@ -539,7 +553,9 @@ button.danger { background: var(--danger); color: #fff; border-color: transparen
 .t6-row-label { display: flex; flex-direction: column; justify-content: center; font-size: 0.85rem; font-weight: 600; }
 .t6-card {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-  min-height: 56px; padding: 4px 2px; border-radius: 8px; border: 2px solid var(--border); background: var(--surface);
+  min-height: 56px; padding: 4px 2px; border-radius: 8px; border: 2px solid rgba(30, 20, 80, 0.14);
+  /* 牌像實體紙牌一樣固定是淺色底；數字是深色，深色模式下也看得清楚 */
+  background: #fffdf8; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 .t6-card.heads-2 { background: #e8f1ff; }
 .t6-card.heads-3 { background: #fff4d6; }

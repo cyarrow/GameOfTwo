@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getGame } from '../games/registry';
 import { gameGradient } from '../games/theme';
 import { haptic } from '../platform/haptics';
+import { reloadToVersion } from '../platform/useUpdateCheck';
 import { Confetti } from './Confetti';
 import { ErrorBoundary } from './ErrorBoundary';
 import { backToLobby, sendMove, startMatch } from '../platform/room';
@@ -47,8 +48,13 @@ export function GameStage({ room, match, me }: { room: Room; match: MatchData; m
   if (!game) {
     return (
       <div className="card stack">
-        <p className="error">找不到這個遊戲（{match.gameId}），可能是網站版本不同，請重新整理。</p>
-        {isHost && <button onClick={() => run(() => backToLobby(room.code, me))}>回大廳</button>}
+        <p className="error">找不到這個遊戲（{match.gameId}），可能是別人用的是比較新的網站版本。</p>
+        <div className="row">
+          <button className="primary" onClick={() => reloadToVersion(Date.now().toString(36))}>
+            更新網站
+          </button>
+          {isHost && <button onClick={() => run(() => backToLobby(room.code, me))}>回大廳</button>}
+        </div>
       </div>
     );
   }
