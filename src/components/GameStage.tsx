@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getGame } from '../games/registry';
+import { gameGradient } from '../games/theme';
 import { ErrorBoundary } from './ErrorBoundary';
 import { backToLobby, sendMove, startMatch } from '../platform/room';
 import { errorMessage } from '../platform/roomState';
@@ -34,10 +35,14 @@ export function GameStage({ room, match, me }: { room: Room; match: MatchData; m
   const View = game.View;
 
   return (
-    <div className="card stack">
+    <div className="card stack stage">
+      <div className="stage-band" style={{ background: gameGradient(game.id) }} aria-hidden="true" />
       <div className="stage-header">
         <h2>
-          {game.emoji} {game.name}
+          <span className="stage-emoji" style={{ background: gameGradient(game.id) }}>
+            {game.emoji}
+          </span>
+          {game.name}
         </h2>
         {isHost && !finished && (
           <button

@@ -13,6 +13,7 @@ export const dotsBoxes: GameModule<DotsBoxesState, DotsBoxesMove> = {
     '小心不要畫第三條邊，會送對手格子！',
     '格子都被佔領後，佔最多格的人得 1 分（同分一起得分）。',
   ],
+  category: '策略',
   minPlayers: 2,
   maxPlayers: 4,
   setup,

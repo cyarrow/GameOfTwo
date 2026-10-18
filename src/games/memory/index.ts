@@ -13,6 +13,7 @@ export const memory: GameModule<MemoryState, MemoryMove> = {
     '沒配對成功的牌會保持翻開，直到下一位玩家翻牌，大家都看得到，記好位置！',
     '配對最多的人得 1 分（同分一起得分）。',
   ],
+  category: '卡牌',
   minPlayers: 2,
   maxPlayers: 4,
   setup,

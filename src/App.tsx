@@ -23,7 +23,11 @@ export function App() {
     <div className="app">
       <header className="topbar">
         <a href="#/" className="brand">
-          🎲 GameOfTwo
+          <span className="brand-mark">🎲</span>
+          GameOfTwo
+        </a>
+        <a href="#/banks" className="topbar-link">
+          ✏️ 自訂題庫
         </a>
       </header>
       <main className="content">

@@ -13,6 +13,7 @@ export const othello: GameModule<OthelloState, OthelloMove> = {
     '沒地方下的話會自動跳過，兩邊都沒地方下時結束。',
     '棋子比較多的人得 1 分。',
   ],
+  category: '策略',
   minPlayers: 2,
   maxPlayers: 2,
   setup,

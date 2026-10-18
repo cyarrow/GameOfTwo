@@ -35,7 +35,7 @@ export function ChatBox({ room, me }: { room: Room; me: string }) {
 
   return (
     <section className="card chat">
-      <h3>聊天</h3>
+      <h3 className="panel-title">聊天</h3>
       <ul className="chat-list" ref={listRef}>
         {room.chat.length === 0 && <li className="muted">還沒有訊息，打聲招呼吧！</li>}
         {room.chat.map((m) => (

@@ -12,6 +12,7 @@ export const tapRace: GameModule<TapRaceState, TapRaceMove> = {
     `${DURATION_SECONDS} 秒內狂點按鈕（電腦也可以按空白鍵）。`,
     '點最多下的人得 1 分。',
   ],
+  category: '反應',
   minPlayers: 2,
   maxPlayers: 4,
   setup,

@@ -13,6 +13,7 @@ export const battleship: GameModule<BattleshipState, BattleshipMove> = {
     '💥 是命中、· 是沒打中；一艘船的格子全被打中就沉了。',
     '先擊沉對方全部船艦的人得 1 分。',
   ],
+  category: '策略',
   minPlayers: 2,
   maxPlayers: 2,
   setup,

@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { Avatar } from '../components/Avatar';
 import { EmojiBurst } from '../components/EmojiBurst';
 import { GameStage } from '../components/GameStage';
 import { Lobby } from '../components/Lobby';
@@ -44,7 +45,7 @@ function RoomSession({ code, name }: { code: string; name: string }) {
   const status = useRoom(code, playerId, name);
   const [copied, setCopied] = useState(false);
 
-  if (status.kind === 'loading') return <p className="center muted">連線中…</p>;
+  if (status.kind === 'loading') return <p className="center muted loading">連線中…</p>;
   if (status.kind === 'error') {
     return (
       <div className="card stack narrow">
@@ -77,12 +78,19 @@ function RoomSession({ code, name }: { code: string; name: string }) {
   return (
     <div className="room">
       <div className="room-header">
-        <div>
+        <div className="room-code-pill">
           <span className="muted">房號</span>
           <span className="room-code">{code}</span>
         </div>
-        <div className="row">
-          <button onClick={copyLink}>{copied ? '已複製 ✓' : '複製邀請連結'}</button>
+        <div className="avatar-stack" aria-label="房間成員">
+          {room.players.map((p) => (
+            <Avatar key={p.id} id={p.id} name={p.name} size={34} dim={!p.online} />
+          ))}
+        </div>
+        <div className="row room-actions">
+          <button className="primary" onClick={copyLink}>
+            {copied ? '已複製 ✓' : '🔗 邀請朋友'}
+          </button>
           <button className="ghost" onClick={leave}>
             離開
           </button>

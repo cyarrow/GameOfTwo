@@ -13,6 +13,7 @@ export const reaction: GameModule<ReactionState, ReactionMove> = {
     '時間是在自己的裝置上計算，不受網路快慢影響。',
     '每輪最快的人贏一輪，贏最多輪的人得 1 分。',
   ],
+  category: '反應',
   minPlayers: 2,
   maxPlayers: 4,
   setup,

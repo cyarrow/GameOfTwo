@@ -14,6 +14,7 @@ export const colorChain: GameModule<ColorChainState, ColorChainMove> = {
     '沒牌可出就抽一張，抽到能出的牌可以馬上出，不然就換下一位。',
     '第一個出完手牌的人得 1 分。',
   ],
+  category: '卡牌',
   minPlayers: 2,
   maxPlayers: 4,
   setup,

@@ -13,6 +13,7 @@ export const guessBomb: GameModule<GuessBombState, GuessBombMove> = {
     '沒猜中的話，範圍會往密碼的方向縮小。',
     '猜中密碼的人輸，其他人各得 1 分。',
   ],
+  category: '派對',
   minPlayers: 2,
   maxPlayers: 4,
   setup,
