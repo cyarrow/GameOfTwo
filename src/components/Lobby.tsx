@@ -10,7 +10,10 @@ export function Lobby({ room, me }: { room: Room; me: string }) {
   const isHost = room.hostId === me;
   const onlineCount = room.players.filter((p) => p.online).length;
   const host = room.players.find((p) => p.id === room.hostId);
-  const playable = GAMES.filter((g) => onlineCount >= g.minPlayers && onlineCount <= g.maxPlayers);
+  const fitsCount = (g: (typeof GAMES)[number]) => onlineCount >= g.minPlayers && onlineCount <= g.maxPlayers;
+  const playable = GAMES.filter(fitsCount);
+  // 遊戲很多，目前人數能玩的排前面
+  const sorted = [...playable, ...GAMES.filter((g) => !fitsCount(g))];
 
   async function start(gameId: string) {
     setBusy(true);
@@ -59,8 +62,8 @@ export function Lobby({ room, me }: { room: Room; me: string }) {
       {error && <p className="error">{error}</p>}
 
       <div className="game-grid">
-        {GAMES.map((g) => {
-          const fits = onlineCount >= g.minPlayers && onlineCount <= g.maxPlayers;
+        {sorted.map((g) => {
+          const fits = fitsCount(g);
           return (
             <div key={g.id} className={`game-card ${fits ? '' : 'disabled'}`}>
               <div className="game-emoji">{g.emoji}</div>
