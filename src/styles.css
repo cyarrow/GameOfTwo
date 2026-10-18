@@ -153,3 +153,75 @@ input:focus-visible, button:focus-visible { outline: 2px solid var(--accent); ou
 .ttt-cell { aspect-ratio: 1; font-size: 2.4rem; padding: 0; background: var(--surface-2); }
 .ttt-cell:disabled { opacity: 1; cursor: default; }
 .ttt-cell.win { background: var(--accent-soft); border-color: var(--accent); }
+
+button.danger { background: var(--danger); color: #fff; border-color: transparent; font-weight: 600; }
+.color-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+
+/* 吹牛骰子 */
+.big-bid { font-size: clamp(2rem, 8vw, 2.8rem); font-weight: 800; }
+.dice-row { display: inline-flex; gap: 4px; font-size: 2rem; line-height: 1; }
+.die { border-radius: 6px; padding: 0 1px; }
+.die.hit { background: var(--accent-soft); color: var(--accent); }
+.bid-qty { min-width: 4em; text-align: center; font-size: 1.2rem; }
+.face-btn { font-size: 1.8rem; line-height: 1; padding: 6px 10px; }
+.face-btn.selected, .rps-btn.selected, .option.selected { border-color: var(--accent); background: var(--accent-soft); }
+.dice-table { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; }
+.dice-seat { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border-radius: 10px; background: var(--surface-2); border: 2px solid transparent; }
+.dice-seat.active { border-color: var(--accent); }
+.dice-seat.loser { border-color: var(--danger); }
+
+/* 默契大考驗 */
+.question { text-align: center; font-size: 1.3rem; }
+.option-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.option { display: flex; flex-direction: column; gap: 4px; align-items: center; justify-content: center; min-height: 72px; font-size: 1.05rem; border-width: 2px; }
+.option:disabled { opacity: 1; cursor: default; }
+.option.match { border-color: var(--success); }
+.pickers { font-size: 0.8rem; color: var(--muted); }
+
+/* 連打大賽 */
+.tap-big { text-align: center; font-size: 5rem; font-weight: 800; color: var(--accent); }
+.tap-button {
+  width: min(70vw, 240px); aspect-ratio: 1; border-radius: 50%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 3rem; font-weight: 800; background: var(--accent); color: var(--accent-text);
+  touch-action: manipulation; user-select: none; -webkit-user-select: none;
+}
+.tap-button small { font-size: 0.8rem; font-weight: 400; }
+.race-bars { display: flex; flex-direction: column; gap: 8px; }
+.race-row { display: grid; grid-template-columns: minmax(0, 7em) 1fr 3em; gap: 8px; align-items: center; }
+.race-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.race-track { height: 14px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+.race-fill { height: 100%; border-radius: 99px; transition: width 0.3s; }
+.race-count { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* 剪刀石頭布 */
+.rps-last { display: flex; flex-direction: column; gap: 8px; align-items: center; padding: 12px; border-radius: var(--radius); background: var(--surface-2); }
+.rps-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 84px; border-width: 2px; }
+.rps-btn span { font-size: 2.2rem; line-height: 1.2; }
+
+/* 記憶翻牌 */
+.memory-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; width: min(100%, 420px); margin: 0 auto; }
+.memory-card { aspect-ratio: 3 / 4; padding: 0; font-size: clamp(1.4rem, 6vw, 2rem); border-width: 2px; background: var(--accent); color: var(--accent-text); }
+.memory-card.up { background: var(--surface-2); }
+.memory-card.miss { border-color: var(--danger); }
+.memory-card:disabled { opacity: 1; cursor: default; }
+
+/* 四子棋 */
+.c4-board { display: grid; gap: 4px; padding: 8px; border-radius: var(--radius); background: #2f5fd0; width: min(100%, 420px); }
+.c4-cell { aspect-ratio: 1; padding: 0; border-radius: 50%; border: none; background: var(--bg); font-size: clamp(1.1rem, 5vw, 1.8rem); line-height: 1; }
+.c4-cell:disabled { opacity: 1; cursor: default; }
+.c4-cell.last { box-shadow: 0 0 0 3px #fff inset; }
+.c4-cell.win { box-shadow: 0 0 0 3px var(--success) inset; }
+
+/* 點格棋 */
+.db-board { display: grid; width: min(100%, 360px); aspect-ratio: 1; }
+.db-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--text); }
+.db-box { display: flex; align-items: center; justify-content: center; margin: 3px; border-radius: 6px; color: #fff; font-weight: 700; }
+.db-line { padding: 0; border: none; border-radius: 3px; background: transparent; position: relative; }
+.db-line::after { content: ''; position: absolute; border-radius: 3px; background: var(--border); }
+.db-line.h::after { left: 2px; right: 2px; top: 3px; bottom: 3px; }
+.db-line.v::after { top: 2px; bottom: 2px; left: 3px; right: 3px; }
+.db-line.drawn::after { display: none; }
+.db-line:hover:not(:disabled)::after { background: var(--accent); }
+.db-line:disabled { opacity: 1; cursor: default; }
+.db-line.last { outline: 2px solid var(--text); outline-offset: 1px; }
