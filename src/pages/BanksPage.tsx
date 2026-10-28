@@ -1,3 +1,4 @@
+import { ArrowLeft, PencilLine, Trash2 } from 'lucide-react';
 import { useEffect, useState, type FormEvent } from 'react';
 import { getBackend } from '../backend';
 import {
@@ -71,9 +72,12 @@ export function BanksPage() {
   return (
     <div className="stack banks">
       <div className="row" style={{ justifyContent: 'space-between' }}>
-        <h1>✏️ 自訂題庫</h1>
+        <h1>
+          <PencilLine size={26} className="inline-icon" aria-hidden="true" /> 自訂題庫
+        </h1>
         <a className="button" href="#/" onClick={(e) => history.length > 1 && (e.preventDefault(), history.back())}>
-          ← 返回
+          <ArrowLeft size={16} aria-hidden="true" />
+          返回
         </a>
       </div>
       <p className="muted">在這裡加的題目所有房間共用，而且會永久保存。開局時會優先抽自訂題目（每局約一半）。</p>
@@ -96,7 +100,7 @@ export function BanksPage() {
       {loadError && <p className="error">{loadError}</p>}
 
       <section className="card">
-        <h3>自訂題目</h3>
+        <h2 className="panel-title">自訂題目</h2>
         {entries.length === 0 ? (
           <p className="muted" style={{ marginTop: 8 }}>
             還沒有自訂題目，加一題吧！
@@ -116,6 +120,7 @@ export function BanksPage() {
                     void removeBankItem(tab, id).catch(() => window.alert('刪除失敗，請確認資料庫規則已經更新。'))
                   }
                 >
+                  <Trash2 size={15} aria-hidden="true" />
                   刪除
                 </button>
               </li>

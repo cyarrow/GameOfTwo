@@ -1,3 +1,4 @@
+import { PencilLine, Shuffle, Skull } from 'lucide-react';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { GAMES } from '../games/registry';
 import type { AnyGame, GameCategory } from '../games/types';
@@ -52,7 +53,8 @@ export function Lobby({ room, me }: { room: Room; me: string }) {
         </div>
         {isHost && playable.length > 0 && (
           <button className="primary" onClick={startRandom} disabled={busy}>
-            🎲 隨機選一個
+            <Shuffle size={16} aria-hidden="true" />
+            隨機選一個
           </button>
         )}
       </div>
@@ -68,12 +70,16 @@ export function Lobby({ room, me }: { room: Room; me: string }) {
           />
           <span className="switch" aria-hidden="true" />
           <span>
-            😈 懲罰模式
+            <span className="row" style={{ gap: 6 }}>
+              <Skull size={16} aria-hidden="true" />
+              懲罰模式
+            </span>
             <small className="muted">輸的人抽懲罰卡{isHost ? '' : '（房主切換）'}</small>
           </span>
         </label>
         <a className="button ghost" href="#/banks" target="_blank" rel="noopener">
-          ✏️ 自訂題庫
+          <PencilLine size={16} aria-hidden="true" />
+          自訂題庫
         </a>
       </div>
       {error && <p className="error">{error}</p>}
@@ -86,7 +92,7 @@ export function Lobby({ room, me }: { room: Room; me: string }) {
           return (
             <GameTile key={g.id} game={g} disabled={!fits}>
               {isHost && (
-                <button className="primary" disabled={!fits || busy} onClick={() => start(g.id)}>
+                <button className="tonal" disabled={!fits || busy} onClick={() => start(g.id)}>
                   {fits ? '開始' : `需要 ${playerCountLabel(g)}`}
                 </button>
               )}

@@ -1,3 +1,4 @@
+import { Dices, PencilLine } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { backendKind } from './backend';
 import { UpdateBanner } from './components/UpdateBanner';
@@ -36,16 +37,29 @@ export function App() {
   return (
     <div className="app">
       <header className={`topbar ${scrolled ? 'scrolled' : ''}`}>
+        <a
+          href="#"
+          className="skip-link"
+          onClick={(e) => {
+            e.preventDefault();
+            document.getElementById('main')?.focus();
+          }}
+        >
+          跳到主要內容
+        </a>
         <a href="#/" className="brand">
-          <span className="brand-mark">🎲</span>
+          <span className="brand-mark" aria-hidden="true">
+            <Dices size={18} strokeWidth={2.2} />
+          </span>
           GameOfTwo
         </a>
         <a href="#/banks" className="topbar-link">
-          ✏️ 自訂題庫
+          <PencilLine size={16} aria-hidden="true" />
+          自訂題庫
         </a>
       </header>
       <UpdateBanner />
-      <main className="content">
+      <main className="content" id="main" tabIndex={-1}>
         {roomCode ? <RoomPage key={roomCode} code={roomCode} /> : hash.startsWith('#/banks') ? <BanksPage /> : <HomePage />}
       </main>
       {backendKind === 'local' && (

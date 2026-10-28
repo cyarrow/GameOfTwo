@@ -1,3 +1,4 @@
+import { Crown, UserMinus } from 'lucide-react';
 import { removeOfflinePlayer } from '../platform/room';
 import type { Room } from '../platform/types';
 import { MAX_PLAYERS } from '../platform/types';
@@ -22,7 +23,9 @@ export function Sidebar({ room, me }: { room: Room; me: string }) {
                 <Avatar id={p.id} name={p.name} size={30} dim={!p.online} />
                 <span>
                   {p.name}
-                  {p.id === room.hostId && <span title="房主"> 👑</span>}
+                  {p.id === room.hostId && (
+                    <Crown size={15} className="inline-icon host-crown" role="img" aria-label="房主" style={{ marginLeft: 4 }} />
+                  )}
                   {p.id === me && <span className="muted">（你）</span>}
                   {!p.online && <small className="muted"> 離線</small>}
                 </span>
@@ -33,6 +36,7 @@ export function Sidebar({ room, me }: { room: Room; me: string }) {
                     className="ghost small"
                     onClick={() => window.confirm(`把 ${p.name} 移出房間？`) && void removeOfflinePlayer(room.code, me, p.id).catch(() => {})}
                   >
+                    <UserMinus size={15} aria-hidden="true" />
                     移除
                   </button>
                 )}

@@ -1,3 +1,4 @@
+import { Check, Link2, LogOut } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { Avatar } from '../components/Avatar';
 import { EmojiBurst } from '../components/EmojiBurst';
@@ -58,6 +59,7 @@ function RoomSession({ code, name }: { code: string; name: string }) {
   }
 
   const { room } = status;
+  const onlineCount = room.players.filter((p) => p.online).length;
 
   async function copyLink() {
     const url = `${window.location.origin}${window.location.pathname}#/room/${code}`;
@@ -78,20 +80,23 @@ function RoomSession({ code, name }: { code: string; name: string }) {
   return (
     <div className="room">
       <div className="room-header">
-        <div className="room-code-pill">
+        <h1 className="room-code-pill">
           <span className="muted">房號</span>
           <span className="room-code">{code}</span>
-        </div>
-        <div className="avatar-stack" aria-label="房間成員">
+        </h1>
+        <div className="avatar-stack" role="group" aria-label="房間成員">
           {room.players.map((p) => (
             <Avatar key={p.id} id={p.id} name={p.name} size={34} dim={!p.online} />
           ))}
         </div>
         <div className="row room-actions">
-          <button className="primary" onClick={copyLink}>
-            {copied ? '已複製 ✓' : '🔗 邀請朋友'}
+          {/* 只有自己一個人時，邀請朋友才是主要動作 */}
+          <button className={onlineCount < 2 ? 'primary' : ''} onClick={copyLink}>
+            {copied ? <Check size={16} aria-hidden="true" /> : <Link2 size={16} aria-hidden="true" />}
+            {copied ? '已複製連結' : '邀請朋友'}
           </button>
           <button className="ghost" onClick={leave}>
+            <LogOut size={16} aria-hidden="true" />
             離開
           </button>
         </div>

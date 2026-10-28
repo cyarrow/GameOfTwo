@@ -1,3 +1,4 @@
+import { Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { reloadToVersion, useUpdateCheck } from '../platform/useUpdateCheck';
 
@@ -9,7 +10,10 @@ export function UpdateBanner() {
 
   return (
     <div className="update-banner" role="status">
-      <span>🎉 網站有新版本！</span>
+      <span className="row" style={{ gap: 8 }}>
+        <Sparkles size={18} aria-hidden="true" />
+        網站有新版本！
+      </span>
       <div className="row">
         <button className="primary small" onClick={() => reloadToVersion(latest)}>
           更新

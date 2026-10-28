@@ -1,3 +1,4 @@
+import { Skull, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { getGame } from '../games/registry';
 import { gameGradient } from '../games/theme';
@@ -76,6 +77,7 @@ export function GameStage({ room, match, me }: { room: Room; match: MatchData; m
             className="ghost small"
             onClick={() => window.confirm('確定要中止這局嗎？不會計分。') && run(() => backToLobby(room.code, me))}
           >
+            <X size={15} aria-hidden="true" />
             中止這局
           </button>
         )}
@@ -91,6 +93,11 @@ export function GameStage({ room, match, me }: { room: Room; match: MatchData; m
       </details>
 
       {!isPlayer && <p className="notice">你在這局開始後才加入，目前是觀戰中，下一局就能一起玩。</p>}
+
+      {/* 輪到自己時讓螢幕閱讀器念出來 */}
+      <p className="sr-only" role="status" aria-live="polite">
+        {myTurn ? '輪到你了' : ''}
+      </p>
 
       <ErrorBoundary
         key={match.id}
@@ -112,7 +119,10 @@ export function GameStage({ room, match, me }: { room: Room; match: MatchData; m
           {celebrate && <Confetti key={celebrate} />}
           {match.punishment && (
             <div className="punishment">
-              <span className="muted">😈 懲罰卡</span>
+              <span className="muted row" style={{ gap: 6, justifyContent: 'center' }}>
+                <Skull size={15} aria-hidden="true" />
+                懲罰卡
+              </span>
               <strong>
                 {match.punishment.losers.map((id) => names[id] ?? '（已離開）').join('、')}：{match.punishment.text}
               </strong>
