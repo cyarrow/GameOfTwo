@@ -1,3 +1,4 @@
+import { ArrowRight, PencilLine } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { GameTile } from '../components/GameTile';
 import { GAMES } from '../games/registry';
@@ -88,7 +89,9 @@ export function HomePage() {
         <div className="section-head">
           <h2>全部遊戲</h2>
           <a href="#/banks" className="muted">
-            ✏️ 自訂題庫 →
+            <PencilLine size={16} aria-hidden="true" />
+            自訂題庫
+            <ArrowRight size={16} aria-hidden="true" />
           </a>
         </div>
         <div className="game-grid">

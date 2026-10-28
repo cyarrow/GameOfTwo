@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { shortNames } from '../helpers';
 import { applyMove, boxCounts, getResult, setup, SIZE, type DotsBoxesState } from './logic';
 
 function draw(s: DotsBoxesState, line: string): DotsBoxesState {
@@ -45,5 +46,10 @@ describe('點格棋', () => {
     for (const l of allLines()) s = draw(s, l);
     expect(Object.keys(s.boxes)).toHaveLength(SIZE * SIZE);
     expect(getResult(s, {})).not.toBeNull();
+  });
+
+  it('格子上的名字縮寫不會重複', () => {
+    expect(shortNames(['a', 'b', 'c'], { a: '小明', b: '小華', c: '阿美' })).toEqual({ a: '小明', b: '小華', c: '阿' });
+    expect(shortNames(['a', 'b'], { a: 'YY', b: 'YYZ' })).toEqual({ a: 'YY', b: 'YYZ' });
   });
 });

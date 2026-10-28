@@ -1,5 +1,5 @@
 import type { GameViewProps } from '../types';
-import { nameOf, PLAYER_COLORS, useMove } from '../helpers';
+import { nameOf, PLAYER_COLORS, shortNames, useMove } from '../helpers';
 import { boxCounts, currentPlayer, SIZE, type DotsBoxesMove, type DotsBoxesState } from './logic';
 
 export function DotsBoxesView({ state, me, names, sendMove, finished }: GameViewProps<DotsBoxesState, DotsBoxesMove>) {
@@ -8,6 +8,7 @@ export function DotsBoxesView({ state, me, names, sendMove, finished }: GameView
   const myTurn = !finished && me === turnId;
   const colorOf = (id: string) => PLAYER_COLORS[state.order.indexOf(id) % PLAYER_COLORS.length];
   const counts = boxCounts(state);
+  const short = shortNames(state.order, names);
 
   // 畫成 (2×SIZE+1)² 的格子：偶數列/行是點與線，奇數列+奇數行是格子
   const n = SIZE * 2 + 1;
@@ -20,7 +21,15 @@ export function DotsBoxesView({ state, me, names, sendMove, finished }: GameView
       } else if (gr % 2 === 1 && gc % 2 === 1) {
         const owner = state.boxes[`${(gr - 1) / 2}-${(gc - 1) / 2}`];
         cells.push(
-          <span key={`${key}-${owner ?? ''}`} className={`db-box ${owner ? 'pop-in' : ''}`} style={owner ? { background: colorOf(owner) } : undefined} />,
+          <span
+            key={`${key}-${owner ?? ''}`}
+            className={`db-box ${owner ? 'pop-in' : ''}`}
+            style={owner ? { background: colorOf(owner) } : undefined}
+            aria-label={owner ? `${nameOf(names, owner)} 的格子` : undefined}
+          >
+            {/* 除了顏色也標上名字縮寫，色弱的玩家也分得出來 */}
+            {owner ? short[owner] : ''}
+          </span>,
         );
       } else {
         const line = gr % 2 === 0 ? `h-${gr / 2}-${(gc - 1) / 2}` : `v-${(gr - 1) / 2}-${gc / 2}`;
